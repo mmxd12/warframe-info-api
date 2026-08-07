@@ -1,0 +1,32 @@
+[
+  {
+    "uniqueName": "/Lotus/Types/Game/MissionDecks/DeimosMissionRewards/TierBTableBRewards",
+    "_note": "火卫二 Tier B 第二轮。同 Tier 的 TableA 有 17 条，可参照其结构",
+    "rewards": []
+  },
+  {
+    "uniqueName": "/Lotus/Types/Game/MissionDecks/DeimosMissionRewards/TierBTableCRewards",
+    "_note": "火卫二 Tier B 第三轮",
+    "rewards": []
+  },
+  {
+    "uniqueName": "/Lotus/Types/Game/MissionDecks/DeimosMissionRewards/TierDTableARewards",
+    "_note": "火卫二 Tier D 第一轮。对应赏金 Core Samples / DeimosExcavateBounty，实测轮换中会出现",
+    "rewards": []
+  },
+  {
+    "uniqueName": "/Lotus/Types/Game/MissionDecks/DeimosMissionRewards/TierDTableCRewards",
+    "_note": "火卫二 Tier D 第三轮。同 Tier 的 TableB 有 10 条",
+    "rewards": []
+  },
+  {
+    "uniqueName": "/Lotus/Types/Game/MissionDecks/DeimosMissionRewards/TierETableBRewards",
+    "_note": "火卫二 Tier E 第二轮。同 Tier 的 TableA 有 6 条",
+    "rewards": []
+  },
+  {
+    "uniqueName": "/Lotus/Types/Game/MissionDecks/DeimosMissionRewards/TierETableCRewards",
+    "_note": "火卫二 Tier E 第三轮",
+    "rewards": []
+  }
+]

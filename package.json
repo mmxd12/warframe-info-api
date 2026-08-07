@@ -1,0 +1,29 @@
+{
+  "name": "warframe-info-api",
+  "version": "0.1.0",
+  "private": true,
+  "license": "WTFPL",
+  "scripts": {
+    "start": "node ./bin/www"
+  },
+  "dependencies": {
+    "@vitalets/google-translate-api": "^9.2.1",
+    "cheerio": "^1.0.0",
+    "cookie-parser": "^1.4.7",
+    "debug": "^4.4.3",
+    "ejs": "^3.1.10",
+    "express": "^4.21.2",
+    "express-fingerprint": "^1.2.2",
+    "express-promise-router": "^4.1.1",
+    "http-errors": "^2.0.0",
+    "lzma": "^2.3.2",
+    "memory-cache": "^0.2.0",
+    "moment": "^2.30.1",
+    "morgan": "^1.11.0",
+    "node-schedule": "^2.1.1",
+    "request-param": "^1.0.1",
+    "undici": "^6.28.0",
+    "warframe-worldstate-parser": "^5.4.8",
+    "winston": "^3.19.0"
+  }
+}

@@ -1,0 +1,102 @@
+const express = require('express');
+const router = require('express-promise-router')();
+const wm = require('../service/warframe/warframeMarket');
+const utils = require('../utils/utils');
+const logger = require('../utils/logger')(__filename)
+const wmApi = require('../api/warframeMarket')
+const fs = require('fs');
+const path = require("path");
+const moment = require("moment");
+const wfa = require("../utils/wfaLibs")
+
+const cacheHeader = 'wm';
+const timeout = 60 * 1000;
+/**
+ *  warframe market 信息相关接口
+ *  ps：wm是指http://warframe.market
+ */
+
+// 物品行情查询：/wm/紫卡 或 /wm/Mag%20Prime，中英文皆可。
+// 放在文件末尾注册，避免把 /auctions 等固定路径吃掉。
+
+// const filePath = path.join(__dirname, '../utils/lexicon/wmItems/')
+// router.all('/lexicon',async function (req,res) {
+//     let items = await wmApi.items();
+//     res.send(items);
+// });
+//
+// router.all('/lexiconLoad',async function (req,res) {
+//     const bodyType = req.query.type;
+//     const pathType = req.params.type;
+//     const type = pathType ? pathType : (bodyType ? bodyType : null);
+//     logger.info(`[${moment().format('YYYY-MM-DD HH:mm:ss')}] [load items] - start`)
+//     let items = await wmApi.items();
+//     await utils.createDirIfNotExist(filePath)
+//     logger.info(`[${moment().format('YYYY-MM-DD HH:mm:ss')}] [load items] - size:${items.length}`)
+//     for(let index in items){
+//         let itemName = items[index]['url_name']
+//         let file = filePath+itemName+'.json'
+//         if(!fs.existsSync(file)){
+//             logger.info(`[${moment().format('YYYY-MM-DD HH:mm:ss')}] [load items] - item:${itemName} - start`)
+//             let json = await wmApi.item(itemName)
+//             await utils.writeJsonFile(file,json)
+//             logger.info(`[${moment().format('YYYY-MM-DD HH:mm:ss')}] [load items] - item:${itemName} - end`)
+//             await utils.delay(2000)
+//         }
+//
+//     }
+//     logger.info(`[${moment().format('YYYY-MM-DD HH:mm:ss')}] [load items] - end`)
+//     res.send(await wmApi.items());
+// });
+//
+// router.all('/lexicon/:type',async function (req,res) {
+//     const type = req.query.type || req.params.type || req.body.type || null;
+//     let json = await wmApi.item(type)
+//     logger.info(json)
+//     await utils.createDirIfNotExist(filePath)
+//     logger.info(filePath)
+//     await utils.writeJsonFile(filePath+type+'.json',json)
+//     res.send(json);
+// });
+//
+// router.all('/lexiconList',async function (req,res) {
+//     const bodyType = req.query.type;
+//     const pathType = req.params.type;
+//     const type = pathType ? pathType : (bodyType ? bodyType : null);
+//     let jsonList = await utils.readFileList(filePath)
+//     let resList = []
+//     for(let item in jsonList){
+//         let file = filePath + jsonList[item]
+//         let json = await utils.readJsonFile(file)
+//         if(json['items_in_set']){
+//             resList = resList.concat(json['items_in_set'])
+//         }
+//     }
+//
+//     res.send({ size: resList.length,data :resList});
+// });
+
+// router.all('/lexiconFileList',async function (req,res) {
+//     let resList = await wfa.wmLexicon.lexiconList()
+//     res.send({ size: resList.length,data :resList})
+// })
+
+router.all('/auctions',async function (req,res) {
+    let text = await wmApi.auctions()
+    res.json(text)
+})
+router.all(['/auctionsSearch/:type/:weapon','/auctionsSearch/:type','/auctionsSearch'],async function (req,res) {
+    const type = utils.getParamFromReq(req,'type') 
+    const weapon = utils.getParamFromReq(req,'weapon',true) 
+    let text = await wmApi.auctionsSearch(type,weapon)
+    res.json(text)
+})
+
+router.all(['/:type', ''],async function (req,res) {
+    const type = utils.getParamFromReq(req,'type',true)
+    const page = utils.getParamFromReq(req,'page')
+    const size = utils.getParamFromReq(req,'size')
+    res.send(await wm.getInfo(type,page,size));
+});
+
+module.exports = router;

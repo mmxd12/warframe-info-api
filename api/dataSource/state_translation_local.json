@@ -1,0 +1,47 @@
+[
+  {
+    "uniqueName": "/Lotus/Types/Challenges/Calendar1999/CalendarKillEximusEasy",
+    "name": "前卓越者",
+    "description": "击杀10名卓越者"
+  },
+  {
+    "uniqueName": "/Lotus/Types/Challenges/Calendar1999/CalendarKillTechrotEnemiesEasy",
+    "name": "清除感染",
+    "description": "击杀250名科腐者敌人"
+  },
+  {
+    "uniqueName": "/Lotus/Types/Challenges/Calendar1999/CalendarKillEnemiesWithMeleeHard",
+    "name": "以刃之名",
+    "description": "使用近战武器击杀500名敌人"
+  },
+  {
+    "uniqueName": "/Lotus/Types/Challenges/Calendar1999/CalendarKillEnemiesHard",
+    "name": "扭转劣势",
+    "description": "击杀1,000名敌人"
+  },
+  {
+    "uniqueName": "/Lotus/Upgrades/Calendar/CompanionsRadiationChance",
+    "name": "友军余波",
+    "description": "分身或同伴的攻击有25%几率造成辐射异常状态。"
+  },
+  {
+    "uniqueName": "/Lotus/Upgrades/Calendar/MeleeAttackSpeed",
+    "name": "绝不留情",
+    "description": "近战攻击速度 +25%。"
+  },
+  {
+    "uniqueName": "/Lotus/Upgrades/Calendar/ElectricDamagePerDistance",
+    "name": "远距电击",
+    "description": ""
+  },
+  {
+    "uniqueName": "/Lotus/StoreItems/Types/Gameplay/NarmerSorties/ArchonCrystalNira",
+    "name": "琥珀源力结晶",
+    "description": ""
+  },
+  {
+    "uniqueName": "/Lotus/StoreItems/Types/Recipes/Components/FormaAuraBlueprint",
+    "name": "光环 Forma 蓝图",
+    "description": ""
+  }
+]
