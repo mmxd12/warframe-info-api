@@ -171,8 +171,8 @@ npm start
 - DE 官方 PublicExport（中文翻译，本地补充词表兜底）
 
 ## 搭配llm使用
-这里给astrbot写了插件和rag可以自行使用
-[astrbot插件](https://github.com/mmxd12/astrbot_plugin_wfrag_tool)
-[rag索引](https://github.com/mmxd12/wf-rag-pack)
-有问题可以提[issues](https://github.com/mmxd12/warframe-info-api/issues)
-或者你可以进群435021808和我们进行友好交流
+- 这里给astrbot写了插件和rag可以自行使用
+- [astrbot插件](https://github.com/mmxd12/astrbot_plugin_wfrag_tool)
+- [rag索引](https://github.com/mmxd12/wf-rag-pack)
+- 有问题可以提[issues](https://github.com/mmxd12/warframe-info-api/issues)
+- 或者你可以进群435021808和我们进行友好交流
