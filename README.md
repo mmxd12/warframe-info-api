@@ -159,6 +159,14 @@ yarn start
 npm start
 ```
 
+### 3. 用pm2启动
+```bash
+pm2 start ecosystem.config.js
+pm2 logs warframe-info-api    # 看日志
+pm2 restart warframe-info-api  # 重启
+pm2 stop warframe-info-api     # 停止
+```
+
 默认端口 3000。如需修改端口或配置 HTTPS 证书，请编辑 `bin/www`。
 
 ---
