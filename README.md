@@ -13,6 +13,8 @@
 - `/wf/电波` 或 `/wf/nightwave` → 电波信息
 - `/wf/突击` 或 `/wf/sortie` → 突击任务
 - `/wf/裂缝` 或 `/wf/fissures` → 虚空裂缝
+- `/wf/钢铁裂缝` 或 `/wf/steelFissures` → 钢铁裂缝（仅显示 isHard 的裂缝）
+- `/wf/九重天` 或 `/wf/railjack` → 九重天/航道星舰裂缝（前哨战/爆发任务）
 - `/wf/奸商` 或 `/wf/voidTrader` → 奸商 Baro
 - `/wf/日历` 或 `/wf/calendar` → 1999 日历
 - `/wf/钢铁之路` 或 `/wf/steelPath` → 钢铁之路周常奖励轮换
@@ -21,9 +23,11 @@
 - `/wf/地球赏金` 或 `/wf/ostrons` → 地球平原赏金
 - `/wf/金星赏金` 或 `/wf/solaris` → 金星平原赏金
 - `/wf/火卫二赏金` 或 `/wf/entrati` → 火卫二平原赏金
+- `/wf/科维兽` 或 `/wf/cavia` → 科维兽/扎里曼赏金任务
+- `/wf/1999赏金` 或 `/wf/hex` → 1999/Höllvania 六人组赏金任务
 - `/wf/深层科研` 或 `/wf/时光科研` → 深层/时光科研（archimedeas，含中文术语翻译）；`/wf/科研` 返回两者全量
-- `/wf/灵化`（别名 `本周灵化`/`灵化之源`/`incarnon`/`钢铁回环`）→ 本周钢铁之路回环的灵化之源武器轮换
-- `/wf/回环`（别名 `双衍回环`/`本周战甲`/`circuit`）→ 本周普通回环的战甲轮换
+- 
+- 
 - `/wf/双衍王境` 或 `/wf/duviriCycle` → 螺旋情绪 + 两档回环轮换全量
 
 **更多支持的类型**：`timestamp`（服务器时间）、`news`（新闻）、`events`（活动）、`alerts`（警报）、`invasions`（入侵）、`flashSales`（促销）、`dailyDeals`（达尔沃）、`persistentEnemies`（小小黑）、`earthCycle`（地球昼夜）、`cetusCycle`（希图斯昼夜）、`vallisCycle`（福尔图娜温度）、`cambionCycle`（火卫二循环）、`zarimanCycle`（扎里曼）、`arbitration`（仲裁）、`constructionProgress`（舰队建造）、`simaris`（中枢 Simaris 声望目标）、`sentientOutposts`（无形者先遣舰）、`clanWeeklyInitiative`（氏族每周倡议）、`conclaveChallenges`（武形秘仪挑战）
