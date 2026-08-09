@@ -35,8 +35,18 @@ const warframe = {
                 return syndicateFilter(syndicateMissionsFormat(orginInfo), 'Solaris United');
             case "EntratiSyndicate":
                 return syndicateFilter(syndicateMissionsFormat(orginInfo), 'Entrati');
+            case "Cavia":
+                return syndicateFilter(syndicateMissionsFormat(orginInfo), 'Cavia');
+            case "Hex":
+                return syndicateFilter(syndicateMissionsFormat(orginInfo), 'Hex');
             case "fissures":
                 return fissuresFormat(orginInfo);
+            case "steelFissures":
+                return fissuresFormat(orginInfo).filter(f => f.isHard === true);
+            case "railjack":
+                return fissuresFormat(orginInfo).filter(f =>
+                    f.missionTypeKey === 'Skirmish' || f.missionTypeKey === 'Volatile'
+                );
             case "flashSales":
                 return flashSalesFormat(orginInfo);
             case "invasions":
