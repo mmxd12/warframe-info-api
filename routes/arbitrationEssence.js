@@ -62,7 +62,7 @@ router.get('/:days?', function(req, res) {
   // 如果 Nyxbot 不可用，尝试其他数据源
   const fallbackUrl = 'https://wf.555590.xyz/api/arbys?days=' + days;
   
-  require('http').get(fallbackUrl, (fRes) => {
+  require('https').get(fallbackUrl, (fRes) => {
     let data = '';
     fRes.on('data', chunk => data += chunk);
     fRes.on('end', () => {
