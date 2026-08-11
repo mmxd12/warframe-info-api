@@ -1,9 +1,7 @@
 const express = require('express');
 const router = express.Router();
-const fs = require('fs');
-const path = require('path');
 
-// 精华表数据
+// 精华表数据（Warframe Wiki 整理：节点 -> 精华/小时）
 const ESSENCE_TABLE = {
   "V Prime": 350, "V Prime (金星)": 350,
   "Tycho": 320, "Tycho (月球)": 320,
@@ -28,10 +26,9 @@ const ESSENCE_TABLE = {
 // 匹配节点名的精华数量
 function getEssence(node) {
   if (!node) return null;
-  // 直接匹配
   if (ESSENCE_TABLE[node]) return ESSENCE_TABLE[node];
   // 去掉星球名后匹配
-  const clean = node.replace(/[（(].*?[）)]/, '');
+  const clean = node.replace(/[（(].*?[）)]/, '').trim();
   if (ESSENCE_TABLE[clean]) return ESSENCE_TABLE[clean];
   // 部分匹配
   for (const key in ESSENCE_TABLE) {
@@ -48,50 +45,39 @@ function getQuality(essence) {
   if (essence >= 400) return 'S';
   if (essence >= 350) return 'B';
   if (essence >= 300) return 'C';
-  if (essence >= 250) return 'B';
   return 'D';
 }
 
 /* GET 精华表 - 显示未来N条仲裁的精华数量 */
 router.get('/:days?', function(req, res) {
   const days = parseInt(req.params.days) || 7;
-  
+
   // 从 Nyxbot 数据源获取仲裁排期
   const ARBYS_URL = 'https://wf.555590.xyz/api/arbys?days=' + days;
-  
-  // 如果 Nyxbot 不可用，尝试其他数据源
-  const fallbackUrl = 'https://wf.555590.xyz/api/arbys?days=' + days;
-  
-  require('https').get(fallbackUrl, (fRes) => {
-    let data = '';
-    fRes.on('data', chunk => data += chunk);
-    fRes.on('end', () => {
-      try {
-        const arbitations = JSON.parse(data);
-        const result = arbitations.map(item => {
-          const essence = getEssence(item.node);
-          const quality = getQuality(essence);
-          return {
-            id: item.id,
-            node: item.node,
-            missionType: item.missionType,
-            enemy: item.enemy,
-            activation: item.activation,
-            expiry: item.expiry,
-            essence: essence,
-            quality: quality,
-            eta: item.eta
-          };
-        });
-        res.json({ success: true, data: result });
-      } catch (e) {
-        res.json({ success: false, error: '数据获取失败', data: [] });
-      }
+
+  fetch(ARBYS_URL, { headers: { 'User-Agent': 'wf-api/1.0' } })
+    .then(fRes => fRes.json())
+    .then(arbitations => {
+      const result = (arbitations || []).map(item => {
+        const essence = getEssence(item.node);
+        const quality = getQuality(essence);
+        return {
+          id: item.id,
+          node: item.node,
+          missionType: item.missionType,
+          enemy: item.enemy,
+          activation: item.activation,
+          expiry: item.expiry,
+          essence: essence,
+          quality: quality,
+          eta: item.eta
+        };
+      });
+      res.json({ success: true, data: result });
+    })
+    .catch(e => {
+      res.json({ success: false, error: '数据获取失败: ' + e.message, data: [] });
     });
-  }).on('error', (e) => {
-    // 如果 Nyxbot 不可用，返回空的精华表
-    res.json({ success: true, data: [], tip: '仲裁精华表数据源暂时不可用，请稍后再试' });
-  });
 });
 
 module.exports = router;
