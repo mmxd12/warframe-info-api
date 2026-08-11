@@ -175,6 +175,44 @@ pm2 stop warframe-info-api     # 停止
 
 ---
 
+### 仲裁精华表
+
+查询仲裁任务的精华/小时、品质、节点。
+
+```
+GET /arb
+GET /arb/:days
+```
+
+| 参数 | 类型 | 说明 |
+|------|------|------|
+| days | int | 可选，查询天数，默认7，最多30 |
+
+**示例：**
+```
+GET /arb/7
+```
+
+**返回：**
+```json
+{
+  "success": true,
+  "data": [
+    {
+      "node": "V Prime (金星)",
+      "missionType": "生存",
+      "essence": 350,
+      "quality": "B",
+      "eta": "17m 33s"
+    }
+  ]
+}
+```
+
+品质分级：S(≥400) > B(≥350) > C(≥300) > D(<300)
+
+---
+
 ## 技术栈
 - Node.js + Express
 - warframe-worldstate-parser（世界状态解析）
