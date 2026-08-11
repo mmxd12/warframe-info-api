@@ -13,6 +13,7 @@ const wm = require('./routes/warframeMarket');
 const wma = require('./routes/warframeMarketAuctions');
 const wiki = require('./routes/huijiwiki');
 const dict = require('./routes/dict');
+const arbEssence = require('./routes/arbitrationEssence');
 const app = express();
 
 
@@ -50,6 +51,7 @@ init.onstart().then(() =>{
   app.use('/wmw', wma);
   app.use('/wiki', wiki);
   app.use('/dict', dict);
+  app.use('/arb', arbEssence);
 // catch 404 and forward to error handler
   app.use(function(req, res, next) {
     next(createError(404));
