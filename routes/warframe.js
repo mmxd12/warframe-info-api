@@ -70,7 +70,7 @@ router.all(['/:type', ''],function (req,res) {
       // 和"输入拼错/别名不存在"是两码事，分开提示。
       if (param && Object.prototype.hasOwnProperty.call(worldState, param))
         return res.json({ error: `当前无数据：${input}（该类型未激活）` });
-      return res.json({error:`未知类型：${input}`});
+      return res.json({error: `未知类型：${input}`, tip: '输入错误？请查看文档：https://github.com/mmxd12/warframe-info-api'});
     }
     const data = warframeUtil.getInfo(type, body);
     if (data instanceof Promise) {
