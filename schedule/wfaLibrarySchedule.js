@@ -13,6 +13,17 @@ let setWfaLibCache = async () => {
     let dicts = await retry(wfaApi.getWfaLexiconFromGithub,`${head} -- wfa dicts`)
     let wmDicts = await retry(wmApi.auctions,`${head} -- wm dicts`)
     let mergedLibData = { ...dicts,...wmDicts }
+    // 拉取 browse.wf 补充词库（官方词库缺失的翻译）
+    try {
+        const { getText } = require('../utils/superagent')
+        const browseDict = await getText('https://oracle.browse.wf/dicts/zh.json')
+        if (browseDict) {
+            mergedLibData.BrowseDict = JSON.parse(browseDict)
+            logger.info(`${head} -- browse.wf dicts: ${Object.keys(mergedLibData.BrowseDict).length} 条`)
+        }
+    } catch (e) {
+        logger.warn(`${head} -- browse.wf dicts 拉取失败: ${e.message}`)
+    }
     logger.info(`${head} mergedLibData:{${Object.keys(mergedLibData)}} ${new Date().getTime() - start} ms`)
     // save lib to cache
     cache.put(cacheKey, mergedLibData)
