@@ -70,6 +70,7 @@ router.all(['/:type', ''],function (req,res) {
     "Hex": "syndicateMissions",
     "archimedeas:CT_LAB": "archimedeas",
     "archimedeas:CT_HEX": "archimedeas",
+    "The Holdfasts": "syndicateMissions",
   };
   const param = TYPE_MAP[type] || utils.testType(type);
   logger.info(`wf query: ${input} -> ${type} (param: ${param})`);
