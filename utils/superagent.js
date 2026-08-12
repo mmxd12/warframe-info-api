@@ -15,10 +15,11 @@ if (proxyConfig.enabled && proxyConfig.proxy) {
 const doFetch = (url, header = {}, opts = {}) => fetch(url, {
     headers: { 'User-Agent': UA, ...header },
     dispatcher,
+    ...opts,
 })
 
 const getJson = async (url, header = {}, opts = {}) => {
-    const res = await doFetch(url, header)
+    const res = await doFetch(url, header, opts)
     if (!res.ok) {
         logger.error(`getJson url: ${url} -> HTTP ${res.status}`)
         throw new Error(`HTTP ${res.status} on ${url}`)
@@ -28,7 +29,7 @@ const getJson = async (url, header = {}, opts = {}) => {
 }
 
 const getText = async (url, header = {}, opts = {}) => {
-    const res = await doFetch(url, header)
+    const res = await doFetch(url, header, opts)
     if (!res.ok) {
         logger.error(`getText url: ${url} -> HTTP ${res.status}`)
         throw new Error(`HTTP ${res.status} on ${url}`)
@@ -39,7 +40,7 @@ const getText = async (url, header = {}, opts = {}) => {
 
 // 取原始字节（用于 DE PublicExport 的 .lzma 清单等二进制内容）
 const getBuffer = async (url, header = {}, opts = {}) => {
-    const res = await doFetch(url, header)
+    const res = await doFetch(url, header, opts)
     if (!res.ok) {
         logger.error(`getBuffer url: ${url} -> HTTP ${res.status}`)
         throw new Error(`HTTP ${res.status} on ${url}`)
