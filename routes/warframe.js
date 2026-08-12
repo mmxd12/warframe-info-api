@@ -62,8 +62,15 @@ router.all(['/:type', ''],function (req,res) {
   const input = utils.getParamFromReq(req,'type',true)
   const type = resolveType(input);
   // 赏金三兄弟在数据上是 syndicateMissions 的过滤视图，取数用父类型
-  const param = utils.testType(type);
-  logger.info(`wf query: ${input} -> ${type}`);
+  // 派生类型：这些不是 worldState 原生字段，但 warframeUtil.getInfo 能处理
+  const TYPE_MAP = {
+    "steelFissures": "fissures",
+    "railjack": "fissures",
+    "Cavia": "syndicateMissions",
+    "Hex": "syndicateMissions",
+  };
+  const param = TYPE_MAP[type] || utils.testType(type);
+  logger.info(`wf query: ${input} -> ${type} (param: ${param})`);
   wfApi(param).then( ({ worldState, data: body }) => {
     if(body == null) {
       // worldState 里有这个键但值为 null：类型存在、当前未激活（如无赤毒任务），
