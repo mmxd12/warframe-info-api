@@ -81,7 +81,48 @@ const queryWorldState = async () => {
     // 用 KingPrimes/DataSource 的 reward_pool.json 补全赏金奖励池（已中文化）
     await bountyRewards.enrich(ws)
     // 仲裁：独立源补全
-    return enrichArbitration(ws)
+    await enrichBounties(ws)
+    return ws
+}
+
+// 从 oracle.browse.wf 补全官方 API 缺失的新赏金任务数据（科维兽/1999/扎里曼）
+// 官方 worldState 的 SyndicateMissions 对这几个集团未提供 Jobs 字段，
+// browse.wf 的后端从游戏数据提取了这些信息，这里作为补充数据源接入。
+const BOUNTY_URL = 'https://oracle.browse.wf/bounty-cycle'
+const enrichBounties = async (ws) => {
+    try {
+        const controller = new AbortController()
+        const timer = setTimeout(() => controller.abort(), 10000)
+        const raw = await getText(BOUNTY_URL, {}, { signal: controller.signal })
+        clearTimeout(timer)
+        const data = JSON.parse(raw)
+        const bounties = data.bounties || {}
+        // 映射 oracle 的集团名 -> warframe-worldstate-parser 的 syndicate 名
+        const SYNDICATE_MAP = {
+            'ZarimanSyndicate': 'The Holdfasts',
+            'EntratiLabSyndicate': 'Cavia',
+            'HexSyndicate': 'The Hex',
+        }
+        for (const [oracleTag, syndicateName] of Object.entries(SYNDICATE_MAP)) {
+            const jobs = (bounties[oracleTag] || []).map((b, i) => ({
+                id: `${oracleTag}_${i}`,
+                // 挑战类型名从路径末段提取
+                type: (b.challenge || '').split('/').pop() || 'Unknown',
+                node: b.node || 'Unknown',
+                ally: b.ally || null,
+            }))
+            // 在 syndicateMissions 里找到对应集团，补上 jobs
+            if (Array.isArray(ws.syndicateMissions)) {
+                const target = ws.syndicateMissions.find(s => s.syndicate === syndicateName)
+                if (target && (!target.jobs || target.jobs.length === 0)) {
+                    target.jobs = jobs
+                    target.jobsSource = 'oracle.browse.wf'
+                }
+            }
+        }
+    } catch (e) {
+        logger.warn('[wfrag] 赏金补充数据拉取失败，使用官方数据:', e.message)
+    }
 }
 
 module.exports = { queryWorldState }
