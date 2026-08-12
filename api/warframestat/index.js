@@ -97,43 +97,32 @@ const enrichBounties = async (ws) => {
         clearTimeout(timer)
         const data = JSON.parse(raw)
         const bounties = data.bounties || {}
-        // 映射 oracle 的集团名 -> warframe-worldstate-parser 的 syndicate 名
+        // 拉取挑战名表（browse.wf 从游戏导出，含本地化键）
+        let challengeNames = {}
+        try {
+            const ctrl = new AbortController()
+            const t = setTimeout(() => ctrl.abort(), 8000)
+            const chRaw = await getText('https://browse.wf/warframe-public-export-plus/ExportChallenges.json', {}, { signal: ctrl.signal })
+            clearTimeout(t)
+            challengeNames = JSON.parse(chRaw) || {}
+        } catch (_) { /* 拉取失败时回退 */ }
         const SYNDICATE_MAP = {
             'ZarimanSyndicate': 'The Holdfasts',
             'EntratiLabSyndicate': 'Cavia',
             'HexSyndicate': 'The Hex',
         }
-        // 挑战名末段 -> 可读任务类型（中文字典会翻译）
-        const CHALLENGE_NAMES = {
-            'ZarimanFindMelicaCacheChallenge': '寻找 Melica 缓存',
-            'ZarimanMobDefProtectShieldsChallenge': '保护护盾',
-            'ZarimanKillGrineerChallenge': '击杀 Grineer',
-            'ZarimanKillAsOperatorHardChallenge': '指挥官击杀',
-            'ZarimanDefeatVoidAngelChallenge': '击败虚空天使',
-            'EntratiLabRangedMechWeakpointEasyChallenge': '远程弱点攻击',
-            'EntratiLabActivateConduitsQuickChallenge': '快速激活导管',
-            'EntratiLabKillVialedEnemyChallenge': '击杀瓶装敌人',
-            'EntratiLabKillFlyingMurmurChallenge': '击杀飞行低语者',
-            'EntratiLabDestroyDecorationChallenge': '破坏装饰物',
-            'VaniaHighKillEasy': '高效击杀',
-            'VaniaDestroyHazardsEasy': '摧毁危险物',
-            'VaniaHighKillNormal': '高效击杀',
-            'VaniaDestroyPropsHard': '摧毁道具',
-            'VaniaDestroyVehiclesVeryHard': '摧毁载具',
-            'LichVaniaCaptureTargets': '捕获目标',
-        }
         for (const [oracleTag, syndicateName] of Object.entries(SYNDICATE_MAP)) {
             const jobs = (bounties[oracleTag] || []).map((b, i) => {
-                const challengeName = (b.challenge || '').split('/').pop() || 'Unknown'
+                const ch = challengeNames[b.challenge] || {}
+                const typeKey = ch.name || (b.challenge || '').split('/').pop() || 'Unknown'
                 return {
                     id: `${oracleTag}_${i}`,
-                    type: CHALLENGE_NAMES[challengeName] || challengeName,
+                    type: typeKey,
                     node: b.node || 'Unknown',
                     ally: b.ally || null,
                     expiry: data.expiry,
                 }
             })
-            // 在 syndicateMissions 里找到对应集团，补上 jobs
             if (Array.isArray(ws.syndicateMissions)) {
                 const target = ws.syndicateMissions.find(s => s.syndicate === syndicateName)
                 if (target && (!target.jobs || target.jobs.length === 0)) {
