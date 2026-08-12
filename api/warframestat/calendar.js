@@ -1,6 +1,16 @@
 const { loadStateDict } = require('../dataSource/supplement')
 const logger = require('../../utils/logger')(__filename)
 
+// 本地日历补充翻译：上游 KingPrimes/DataSource 的 state_translation.json 覆盖不全时兜底，
+// 这里直接在 require 时加载，不依赖上游数据源是否可用，保证至少本地表能生效。
+const localState = (() => {
+    try {
+        return require('../dataSource/state_translation_local.json')
+            .filter(e => e && e.uniqueName && e.name)
+            .map(s => ({ key: s.uniqueName, zh: s.name, desc: s.description || '' }))
+    } catch { return [] }
+})()
+
 // 1999 日历（KnownCalendarSeasons）的中文化。
 //
 // 为什么要单独做一层：warframe-worldstate-parser 的 Calendar 模型在构造时就把
@@ -52,12 +62,19 @@ const enrich = async (ws, raw) => {
         return ws
     }
 
+    // 合并上游词库 + 本地补充表（本地补充表 key 与上游一致，同 key 时上游优先，
+    // 补充表只填上游缺失的条目，避免本地覆盖上游的更新）
     let dict
     try {
-        dict = new Map((await loadStateDict()).map(e => [e.key, e]))
+        const upstream = await loadStateDict()
+        dict = new Map()
+        // 先放入本地补充表，再放入上游（上游覆盖同 key）
+        for (const e of localState) dict.set(e.key, e)
+        for (const e of upstream) dict.set(e.key, e)
     } catch (err) {
-        logger.warn(`日历词库加载失败，保留英文: ${(err && err.message) || err}`)
-        return ws
+        // 上游拉取失败时，仅用本地补充表
+        logger.warn(`日历上游词库加载失败，仅用本地补充表: ${(err && err.message) || err}`)
+        dict = new Map(localState.map(e => [e.key, e]))
     }
 
     let hit = 0, miss = 0
