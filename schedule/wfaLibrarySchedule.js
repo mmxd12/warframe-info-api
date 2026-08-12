@@ -24,6 +24,17 @@ let setWfaLibCache = async () => {
     } catch (e) {
         logger.warn(`${head} -- browse.wf dicts 拉取失败: ${e.message}`)
     }
+    // 拉取 WFCD 中文数据（活动/任务/派系/节点等中文翻译）
+    try {
+        const { getWfcdDicts } = require('../api/dataSource/wfcdLibs')
+        const wfcdDict = await getWfcdDicts()
+        if (wfcdDict && wfcdDict.length > 0) {
+            mergedLibData.WfcdZh = wfcdDict
+            logger.info(`${head} -- WFCD dicts: ${wfcdDict.length} 条`)
+        }
+    } catch (e) {
+        logger.warn(`${head} -- WFCD dicts 拉取失败: ${e.message}`)
+    }
     logger.info(`${head} mergedLibData:{${Object.keys(mergedLibData)}} ${new Date().getTime() - start} ms`)
     // save lib to cache
     cache.put(cacheKey, mergedLibData)
