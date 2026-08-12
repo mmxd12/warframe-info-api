@@ -100,6 +100,7 @@ const enrichBounties = async (ws) => {
         // 拉取挑战名表（browse.wf 从游戏导出，含本地化键）
         let challengeNames = {}
         let zhDict = {}
+        let solNodes = {}
         try {
             const ctrl = new AbortController()
             const t = setTimeout(() => ctrl.abort(), 8000)
@@ -112,20 +113,46 @@ const enrichBounties = async (ws) => {
             const dzRaw = await getText('https://browse.wf/warframe-public-export-plus/dict.zh.json', {}, { signal: dzCtrl.signal })
             clearTimeout(dzT)
             zhDict = JSON.parse(dzRaw) || {}
+            // 拉取 WFCD 节点中文名（solNodes.json：SolNode233 -> 奥金工场(扎里曼)）
+            const nCtrl = new AbortController()
+            const nT = setTimeout(() => nCtrl.abort(), 8000)
+            const nRaw = await getText('https://cdn.jsdelivr.net/npm/warframe-worldstate-data@latest/data/zh/solNodes.json', {}, { signal: nCtrl.signal })
+            clearTimeout(nT)
+            solNodes = JSON.parse(nRaw) || {}
         } catch (_) { /* 拉取失败时回退 */ }
         const SYNDICATE_MAP = {
             'ZarimanSyndicate': 'The Holdfasts',
             'EntratiLabSyndicate': 'Cavia',
             'HexSyndicate': 'The Hex',
         }
+        // 敌人等级 / 声望奖励为游戏固定值（browse.wf live.php 同源硬编码，不随轮换变化）
+        const LEVELS = {
+            'ZarimanSyndicate': ['50-55', '60-65', '70-75', '90-95', '110-115'],
+            'EntratiLabSyndicate': ['55-60', '65-70', '75-80', '95-100', '115-120'],
+            'HexSyndicate': ['65-70', '75-80', '85-90', '95-100', '105-110', '115-120', '125-130'],
+        }
+        const REWARDS = {
+            // VQ = Void Plume（虚空翎羽），普通/钢铁模式数量不同
+            'ZarimanSyndicate': ['1/2 VQ', '2/3 VQ', '3/5 VQ', '4/6 VQ', '5/8 VQ'],
+            // 普通/钢铁声望
+            'EntratiLabSyndicate': ['1000/1500', '2000/3000', '3000/4500', '4000/6000', '5000/7500'],
+            'HexSyndicate': ['1000/1500', '2000/3000', '3000/4500', '4000/6000', '5000/7500', '6000/9000', '7500/11250'],
+        }
         for (const [oracleTag, syndicateName] of Object.entries(SYNDICATE_MAP)) {
             const jobs = (bounties[oracleTag] || []).map((b, i) => {
                 const ch = challengeNames[b.challenge] || {}
                 const typeKey = ch.name || (b.challenge || '').split('/').pop() || 'Unknown'
+                // 节点中文名 + 任务类型（WFCD solNodes.json）
+                const nodeInfo = solNodes[b.node] || {}
+                const levels = LEVELS[oracleTag] || []
+                const rewards = REWARDS[oracleTag] || []
                 return {
                     id: `${oracleTag}_${i}`,
                     type: zhDict[ch.name] || typeKey,
-                    node: b.node || 'Unknown',
+                    node: nodeInfo.value || b.node || 'Unknown',
+                    missionType: nodeInfo.type || '',
+                    enemyLevel: levels[i] || '',
+                    reward: rewards[i] || '',
                     ally: b.ally || null,
                     expiry: data.expiry,
                 }
