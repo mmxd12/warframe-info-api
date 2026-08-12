@@ -81,6 +81,7 @@ const ESSENCE_TABLE = {
   "Yursa": 280, "Yursa (海王星)": 280,
   "Tikal": 280, "Tikal (地球)": 280,
   "Cerberus": 280, "Cerberus (冥王星)": 280,
+  "Outer Terminus": 280, "Outer Terminus (冥王星)": 280,
   "Ganymede": 280, "Ganymede (木星)": 280,
   "Stephano": 280, "Stephano (天王星)": 280,
   "Apollodorus": 280, "Apollodorus (阋神星)": 280,
