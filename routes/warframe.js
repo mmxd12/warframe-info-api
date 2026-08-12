@@ -68,6 +68,8 @@ router.all(['/:type', ''],function (req,res) {
     "railjack": "fissures",
     "Cavia": "syndicateMissions",
     "Hex": "syndicateMissions",
+    "archimedeas:CT_LAB": "archimedeas",
+    "archimedeas:CT_HEX": "archimedeas",
   };
   const param = TYPE_MAP[type] || utils.testType(type);
   logger.info(`wf query: ${input} -> ${type} (param: ${param})`);
