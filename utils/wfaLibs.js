@@ -149,6 +149,25 @@ let initLibsCache = async () => {
         logger.error(`加载自定义翻译补充失败: ${(e && e.message) || e}`)
     }
 
+    // 从 schedule 缓存加载 browse.wf 补充词库，加入 Nyx 主词库
+    try {
+        const browseDict = commonMcache.get('BrowseDict') || {}
+        if (Object.keys(browseDict).length > 0) {
+            libs.BrowseDict = browseDict
+            let filled = 0
+            for (const [key, zh] of Object.entries(browseDict)) {
+                const en = key.split('/').pop()
+                if (en && !libs.Nyx.get(en)) {
+                    libs.Nyx.put(en, { en, zh })
+                    filled++
+                }
+            }
+            logger.info(`BrowseDict:${Object.keys(browseDict).length} 条，补充 Nyx:${filled} 条`)
+        }
+    } catch (e) {
+        logger.warn(`加载 BrowseDict 失败: ${(e && e.message) || e}`)
+    }
+
     // wmr2rma()
     wmr2rma()
 
