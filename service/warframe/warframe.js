@@ -38,7 +38,7 @@ const warframe = {
             case "Cavia":
                 return syndicateFilter(syndicateMissionsFormat(orginInfo), 'Cavia');
             case "Hex":
-                return syndicateFilter(syndicateMissionsFormat(orginInfo), 'Hex');
+                return syndicateFilter(syndicateMissionsFormat(orginInfo), 'The Hex');
             case "fissures":
                 return fissuresFormat(orginInfo);
             case "steelFissures":
