@@ -99,12 +99,19 @@ const enrichBounties = async (ws) => {
         const bounties = data.bounties || {}
         // 拉取挑战名表（browse.wf 从游戏导出，含本地化键）
         let challengeNames = {}
+        let zhDict = {}
         try {
             const ctrl = new AbortController()
             const t = setTimeout(() => ctrl.abort(), 8000)
             const chRaw = await getText('https://browse.wf/warframe-public-export-plus/ExportChallenges.json', {}, { signal: ctrl.signal })
             clearTimeout(t)
             challengeNames = JSON.parse(chRaw) || {}
+            // 拉取中文总词库，直接翻译挑战名
+            const dzCtrl = new AbortController()
+            const dzT = setTimeout(() => dzCtrl.abort(), 8000)
+            const dzRaw = await getText('https://browse.wf/warframe-public-export-plus/dict.zh.json', {}, { signal: dzCtrl.signal })
+            clearTimeout(dzT)
+            zhDict = JSON.parse(dzRaw) || {}
         } catch (_) { /* 拉取失败时回退 */ }
         const SYNDICATE_MAP = {
             'ZarimanSyndicate': 'The Holdfasts',
@@ -117,7 +124,7 @@ const enrichBounties = async (ws) => {
                 const typeKey = ch.name || (b.challenge || '').split('/').pop() || 'Unknown'
                 return {
                     id: `${oracleTag}_${i}`,
-                    type: typeKey,
+                    type: zhDict[ch.name] || typeKey,
                     node: b.node || 'Unknown',
                     ally: b.ally || null,
                     expiry: data.expiry,
