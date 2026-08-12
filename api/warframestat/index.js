@@ -37,7 +37,11 @@ const getBuilder = () => {
 // 失败时静默降级：保留解析器生成的占位仲裁，不阻塞整体 worldState 拉取。
 const enrichArbitration = async (ws) => {
     try {
-        const raw = await getText(ARBYS_URL)
+        // 加 20s 超时：wf.555590.xyz 响应慢（约8s），避免偶发超时降级
+        const controller = new AbortController()
+        const timer = setTimeout(() => controller.abort(), 20000)
+        const raw = await getText(ARBYS_URL, {}, { signal: controller.signal })
+        clearTimeout(timer)
         const list = JSON.parse(raw)
         if (!Array.isArray(list) || list.length === 0) return ws
         // 取当前正在进行的仲裁（activation <= now <= expiry）
