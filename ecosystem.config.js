@@ -9,6 +9,7 @@ module.exports = {
     restart_delay: 3000,
     watch: false,
     env: {
+      NODE_OPTIONS: '--no-warnings',
       NODE_ENV: 'production',
       PORT: 3000
     }
