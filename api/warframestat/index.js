@@ -159,7 +159,15 @@ const enrichBounties = async (ws) => {
                     id: `${oracleTag}_${i}`,
                     type: zhDict[ch.name] || typeKey,
                     node: _nodeEntry ? _nodeEntry.zh : b.node || 'Unknown',
-                    missionType: _typeEntry ? _typeEntry.zh : (b.type ? (() => { const t = b.type; const r = libs.Nyx.get(t); if (r) return r.zh; const r2 = libs.Nyx.get(t.replace(/ /g, '')); if (r2) return r2.zh; // CamelCase 加空格：MobileDefense→Mobile Defense const cc = t.replace(/([a-z])([A-Z])/g, '$1 $2').replace(/([A-Z]+)([A-Z][a-z])/g, '$1 $2'); const r3 = libs.Nyx.get(cc); if (r3) return r3.zh; return t; })() : ''),
+                    missionType: _typeEntry ? _typeEntry.zh : (b.type ? (() => {
+                        const t = b.type
+                        const r = libs.Nyx.get(t); if (r) return r.zh
+                        const r2 = libs.Nyx.get(t.replace(/ /g, '')); if (r2) return r2.zh
+                        // CamelCase 加空格：MobileDefense→Mobile Defense
+                        const cc = t.replace(/([a-z])([A-Z])/g, '$1 $2').replace(/([A-Z]+)([A-Z][a-z])/g, '$1 $2')
+                        const r3 = libs.Nyx.get(cc); if (r3) return r3.zh
+                        return t
+                    })() : ''),
                     enemyLevel: levels[i] || '',
                     reward: rewards[i] || '',
                     ally: b.ally ? (ALLY_NAMES[b.ally] || b.ally) : null,
