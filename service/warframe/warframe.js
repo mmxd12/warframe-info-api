@@ -47,7 +47,7 @@ const warframe = {
                 return fissuresFormat(orginInfo).filter(f => f.isHard === true);
             case "railjack":
                 return fissuresFormat(orginInfo).filter(f =>
-                    f.missionTypeKey === 'Skirmish' || f.missionTypeKey === 'Volatile'
+                    f.isStorm === true
                 );
             case "flashSales":
                 return flashSalesFormat(orginInfo);
