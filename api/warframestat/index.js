@@ -155,19 +155,30 @@ const enrichBounties = async (ws) => {
                 const rewards = REWARDS[oracleTag] || []
                 const _nodeEntry = libs && libs.Nyx ? libs.Nyx.get(b.node) : null
                 const _typeEntry = libs && libs.Nyx ? libs.Nyx.get(b.node + '_type') : null
+                // 自动适配 missionType：查词库→去空格→CamelCase→回退原文
+                let _missionType = ''
+                if (_typeEntry) {
+                    _missionType = _typeEntry.zh
+                } else if (b.type) {
+                    const t = b.type
+                    const r1 = libs.Nyx.get(t)
+                    if (r1) { _missionType = r1.zh }
+                    else {
+                        const r2 = libs.Nyx.get(t.replace(/ /g, ''))
+                        if (r2) { _missionType = r2.zh }
+                        else {
+                            const cc = t.replace(/([a-z])([A-Z])/g, '$1 $2').replace(/([A-Z]+)([A-Z][a-z])/g, '$1 $2')
+                            const r3 = libs.Nyx.get(cc)
+                            if (r3) { _missionType = r3.zh }
+                            else { _missionType = t }
+                        }
+                    }
+                }
                 return {
                     id: `${oracleTag}_${i}`,
                     type: zhDict[ch.name] || typeKey,
                     node: _nodeEntry ? _nodeEntry.zh : b.node || 'Unknown',
-                    missionType: _typeEntry ? _typeEntry.zh : (b.type ? (() => {
-                        const t = b.type
-                        const r = libs.Nyx.get(t); if (r) return r.zh
-                        const r2 = libs.Nyx.get(t.replace(/ /g, '')); if (r2) return r2.zh
-                        // CamelCase 加空格：MobileDefense→Mobile Defense
-                        const cc = t.replace(/([a-z])([A-Z])/g, '$1 $2').replace(/([A-Z]+)([A-Z][a-z])/g, '$1 $2')
-                        const r3 = libs.Nyx.get(cc); if (r3) return r3.zh
-                        return t
-                    })() : ''),
+                    missionType: _missionType,
                     enemyLevel: levels[i] || '',
                     reward: rewards[i] || '',
                     ally: b.ally ? (ALLY_NAMES[b.ally] || b.ally) : null,
