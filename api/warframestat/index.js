@@ -101,7 +101,6 @@ const enrichBounties = async (ws) => {
         // 拉取挑战名表（browse.wf 从游戏导出，含本地化键）
         let challengeNames = {}
         let zhDict = {}
-        let solNodes = {}
         let nodeEntry = null, typeEntry = null
         try {
             const ctrl = new AbortController()
@@ -143,8 +142,6 @@ const enrichBounties = async (ws) => {
             const jobs = (bounties[oracleTag] || []).map((b, i) => {
                 const ch = challengeNames[b.challenge] || {}
                 const typeKey = ch.name || (b.challenge || '').split('/').pop() || 'Unknown'
-                // 节点中文名 + 任务类型（WFCD solNodes.json）
-                const nodeInfo = solNodes[b.node] || {}
                 const levels = LEVELS[oracleTag] || []
                 const rewards = REWARDS[oracleTag] || []
                 const _nodeEntry = libs && libs.Nyx ? libs.Nyx.get(b.node) : null
