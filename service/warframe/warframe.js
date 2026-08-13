@@ -213,6 +213,8 @@ function syndicateMissionsFormat(body){
         value.jobs.forEach(function (job) {
             // rewardPool 已由 bountyRewards.js 从 KingPrimes/DataSource 取到中文成品，无需再翻译
             job.type = tran.translateByCache(job.type);
+            // 节点名：词库中有 SolNode232 -> 涂沃主厅(扎里曼) 等映射
+            if (job.node) job.node = tran.translateByCache(job.node);
         })
     });
     return body;
@@ -467,6 +469,11 @@ function archonHuntFormat(body){
     body.boss = tran.translateByCache(body.boss);
     body.faction = tran.translateByCache(body.faction);
     body.rewardPool = tran.translateByCache(body.rewardPool);
+    (body.missions || []).forEach(function (m) {
+        if (m.type) m.type = tran.translateByCache(m.type);
+        if (m.node) m.node = tran.translateByCache(m.node);
+        if (m.modifier) m.modifier = tran.translateByCache(m.modifier);
+    });
     return body;
 }
 
