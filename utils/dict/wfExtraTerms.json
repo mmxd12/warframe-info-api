@@ -150,5 +150,81 @@
  {
   "en": "Void Armageddon",
   "zh": "虚空装甲会战"
+ },
+ {
+  "en": "/Lotus/Language/Missions/MissionName_MobileDefense",
+  "zh": "移动防御"
+ },
+ {
+  "en": "/Lotus/Language/Missions/MissionName_Exterminate",
+  "zh": "歼灭"
+ },
+ {
+  "en": "/Lotus/Language/Missions/MissionName_Assassination",
+  "zh": "刺杀"
+ },
+ {
+  "en": "/Lotus/Language/Missions/MissionName_Capture",
+  "zh": "捕获"
+ },
+ {
+  "en": "/Lotus/Language/Missions/MissionName_Defense",
+  "zh": "防御"
+ },
+ {
+  "en": "/Lotus/Language/Missions/MissionName_Interception",
+  "zh": "拦截"
+ },
+ {
+  "en": "/Lotus/Language/Missions/MissionName_Sabotage",
+  "zh": "破坏"
+ },
+ {
+  "en": "/Lotus/Language/Missions/MissionName_Rescue",
+  "zh": "救援"
+ },
+ {
+  "en": "/Lotus/Language/Missions/MissionName_Spy",
+  "zh": "间谍"
+ },
+ {
+  "en": "/Lotus/Language/Missions/MissionName_Survival",
+  "zh": "生存"
+ },
+ {
+  "en": "/Lotus/Language/Missions/MissionName_Excavation",
+  "zh": "挖掘"
+ },
+ {
+  "en": "/Lotus/Language/Missions/MissionName_Hijack",
+  "zh": "劫持"
+ },
+ {
+  "en": "/Lotus/Language/Missions/MissionName_Corruption",
+  "zh": "虚空洪流"
+ },
+ {
+  "en": "/Lotus/Language/Missions/MissionName_VoidCascade",
+  "zh": "虚空覆涌"
+ },
+ {
+  "en": "/Lotus/Language/Missions/MissionName_Armageddon",
+  "zh": "虚空装甲会战"
+ },
+ {
+  "en": "/Lotus/Language/Missions/MissionName_Alchemy",
+  "zh": "元素转换"
+ },
+ {
+  "en": "/Lotus/Language/Missions/MissionName_DualDefense",
+  "zh": "镜像防御"
+ },
+ {
+  "en": "/Lotus/Language/Missions/MissionName_EndlessCapture",
+  "zh": "无尽捕获"
+ },
+ {
+  "en": "/Lotus/Language/Missions/MissionName_PvPvE",
+  "zh": "小队对战"
  }
 ]
