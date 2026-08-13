@@ -49,6 +49,20 @@ const getWfcdDicts = async () => {
     const results = await Promise.all(files.map(fetchDict))
     const merged = []
     for (const list of results) merged.push(...list)
+    // 额外：从 solNodes 原始数据中提取节点类型（missionType），
+    // 生成 SolNode{xxx}_type 词条，供 enrichBounties 查 missionType 用。
+    // 因为 flattenWfcd 只保留了 value（节点名），type 字段被丢弃了。
+    try {
+        const solData = await getJson(BASE + 'solNodes.json')
+        for (const [k, v] of Object.entries(solData || {})) {
+            if (v && typeof v === 'object' && v.type && typeof v.type === 'string') {
+                merged.push({ en: k + '_type', zh: v.type })
+            }
+        }
+        logger.info(`[wfcd] solNodes type 补充 ${merged.length} 条`)
+    } catch (e) {
+        logger.warn(`[wfcd] solNodes type 拉取失败: ${(e && e.message) || e}`)
+    }
     logger.info(`[wfcd] 拉取完成，共 ${merged.length} 条中文词条`)
     return merged
 }
