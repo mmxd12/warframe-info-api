@@ -14,7 +14,7 @@ const MANIFEST = BASE + 'Manifest/'
 // 参与翻译词库的导出（名称有意义的类别）；每个文件里可能含多个数组（如 Weapons + RailjackWeapons）
 // Regions 提供星球名（systemName，如 Mercury→水星），节点名 DE 官方就是英文、无中文可取。
 // Recipes 不列入：蓝图名全部继承成品名，实测贡献 0 条，白搭两次请求 + 十几秒。
-const EXPORTS = ['Weapons', 'Warframes', 'Upgrades', 'Resources', 'Sentinels', 'Gear', 'RelicArcane', 'Customs', 'Keys', 'Drones', 'Regions']
+const EXPORTS = ['Weapons', 'Warframes', 'Upgrades', 'Resources', 'Sentinels', 'Gear', 'RelicArcane', 'Customs', 'Keys', 'Drones', 'Regions', 'Recipes', 'Flavour', 'FusionBundles', 'SortieRewards']
 
 // TTL 必须小于 initLibsCache 的 2h 调度间隔，否则重跑时 TTL 还没过、直接命中缓存，
 // 等于两个周期才真刷一次。取 100 分钟：每次 2h 调度都会重建，DE 出新中文名最迟 2h 跟上。
