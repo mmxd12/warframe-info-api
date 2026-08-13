@@ -130,7 +130,7 @@ const refresh = () => {
         })
         .catch(err => {
             inflight = null
-            logger.error(`生成 DE 官方词库失败，回退缓存/快照: ${(err && err.message) || err}`)
+            logger.warn(`DE 官方词库拉取超时，回退快照: ${(err && err.message) || err}`)
             const fallback = cache.list || readSnapshot()
             if (fallback) cache = { list: fallback, ts: Date.now() }
             return cache.list || []
