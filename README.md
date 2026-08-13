@@ -42,7 +42,38 @@
 
 也可用 query 参数：`/wf?type=电波`
 
-###仲裁表
+
+
+---
+
+### 2. Warframe Market 物品价格  `/wm/:物品名`
+支持中英文，可模糊匹配，并支持**玩家黑话**直达。示例：
+- `/wm/Mag Prime Set` → 查询 Mag Prime 套装
+- `/wm/奶妈P` → 黑话直达 Trinity Prime Set 行情
+- `/wm/福马` → 黑话直达 Forma 行情
+- `/wm/蛇发女妖·亡魂 一套` → 中文查询（需使用词库收录的精确名称）
+
+分页参数（可选）：
+- `page`：页码（整数），默认 1
+- `size`：每页条数（整数），默认 10
+
+调用方式：
+```bash
+# URL 参数
+curl "http://127.0.0.1:3000/wm/Mag%20Prime%20Set?page=1&size=10"
+
+# query 参数
+curl "http://127.0.0.1:3000/wm?type=Mag%20Prime%20Set&page=1&size=10"
+
+# POST body
+curl -X POST -H 'Content-Type:application/json' \
+  -d '{"page":1,"size":10}' \
+  "http://127.0.0.1:3000/wm/Mag%20Prime%20Set"
+```
+
+---
+
+### 3. 仲裁表
 查询仲裁任务的精华/小时、品质、节点。
 
 ```
@@ -78,36 +109,7 @@ GET /arb/7
 品质分级：S(≥400) > B(≥350) > C(≥300) > D(<300)
 
 
----
-
-### 2. Warframe Market 物品价格  `/wm/:物品名`
-支持中英文，可模糊匹配，并支持**玩家黑话**直达。示例：
-- `/wm/Mag Prime Set` → 查询 Mag Prime 套装
-- `/wm/奶妈P` → 黑话直达 Trinity Prime Set 行情
-- `/wm/福马` → 黑话直达 Forma 行情
-- `/wm/蛇发女妖·亡魂 一套` → 中文查询（需使用词库收录的精确名称）
-
-分页参数（可选）：
-- `page`：页码（整数），默认 1
-- `size`：每页条数（整数），默认 10
-
-调用方式：
-```bash
-# URL 参数
-curl "http://127.0.0.1:3000/wm/Mag%20Prime%20Set?page=1&size=10"
-
-# query 参数
-curl "http://127.0.0.1:3000/wm?type=Mag%20Prime%20Set&page=1&size=10"
-
-# POST body
-curl -X POST -H 'Content-Type:application/json' \
-  -d '{"page":1,"size":10}' \
-  "http://127.0.0.1:3000/wm/Mag%20Prime%20Set"
-```
-
----
-
-### 3. Warframe Market 紫卡价格  `/wmr/:武器名`
+### 4. Warframe Market 紫卡价格  `/wmr/:武器名`
 查询紫卡行情，支持中英文 + 黑话 + 词条筛选。示例：
 - `/wmr/食人女魔` → 查询食人女魔紫卡
 - `/wmr/食人女魔 弹匣 投射物速度 负后坐力` → 按词条筛选（正面词条 + 负面词条）
@@ -116,7 +118,7 @@ curl -X POST -H 'Content-Type:application/json' \
 
 ---
 
-### 4. Warframe Market 玄骸武器价格  `/wmw/:武器名`
+### 5. Warframe Market 玄骸武器价格  `/wmw/:武器名`
 查询玄骸（Lich/Sister）武器行情，支持中英文 + 黑话。示例：
 - `/wmw/Kuva Bramma`
 - `/wmw/Tenet Arca Plasmor`
@@ -126,14 +128,14 @@ curl -X POST -H 'Content-Type:application/json' \
 
 ---
 
-### 5. 灰机 Wiki 搜索  `/wiki/:关键词`
+### 6. 灰机 Wiki 搜索  `/wiki/:关键词`
 返回灰机 Wiki 搜索链接（由于反爬限制，本接口只提供搜索 URL）。
 
 示例：`/wiki/电波` → 返回 `{"url":"https://warframe.huijiwiki.com/..."}`
 
 ---
 
-### 6. 词库查询
+### 7. 词库查询
 
 #### `/dict/list` - 已加载词库列表
 返回所有可用词库名称，例如：
@@ -153,7 +155,7 @@ curl -X POST -H 'Content-Type:application/json' \
 
 ---
 
-### 7. 玩家黑话系统
+### 8. 玩家黑话系统
 
 服务内置 Warframe 玩家黑话词库（**252 条**），覆盖：
 
