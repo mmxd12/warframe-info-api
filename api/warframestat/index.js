@@ -82,6 +82,7 @@ const queryWorldState = async () => {
     // 用 KingPrimes/DataSource 的 reward_pool.json 补全赏金奖励池（已中文化）
     await bountyRewards.enrich(ws)
     // 仲裁：独立源补全
+    await enrichArbitration(ws)
     await enrichBounties(ws)
     return ws
 }
