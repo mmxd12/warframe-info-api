@@ -120,6 +120,15 @@ const enrichBounties = async (ws) => {
         // missionType 通过 SolNode232_type 词条获取（wfcdLibs 额外生成）。
         // 在 map 回调中执行 get 而不是在 try 块中，避免变量作用域问题。
         // 若词库未初始化（首次启动尚未跑完 schedule），则 fallback 到原始值。
+        // 1999 赏金队友（Ally）中文名映射
+        const ALLY_NAMES = {
+            '/Lotus/Types/Gameplay/1999Wf/ProtoframeAllies/ArthurAllyAgent': '亚瑟',
+            '/Lotus/Types/Gameplay/1999Wf/ProtoframeAllies/LettieAllyAgent': '莱蒂',
+            '/Lotus/Types/Gameplay/1999Wf/ProtoframeAllies/AmirAllyAgent': '阿米尔',
+            '/Lotus/Types/Gameplay/1999Wf/ProtoframeAllies/AoiAllyAgent': '碧',
+            '/Lotus/Types/Gameplay/1999Wf/ProtoframeAllies/EleanorAllyAgent': '埃莉诺',
+            '/Lotus/Types/Gameplay/1999Wf/ProtoframeAllies/QuincyAllyAgent': '昆西',
+        }
         const SYNDICATE_MAP = {
             'ZarimanSyndicate': 'The Holdfasts',
             'EntratiLabSyndicate': 'Cavia',
@@ -153,7 +162,7 @@ const enrichBounties = async (ws) => {
                     missionType: _typeEntry ? _typeEntry.zh : '',
                     enemyLevel: levels[i] || '',
                     reward: rewards[i] || '',
-                    ally: b.ally || null,
+                    ally: b.ally ? (ALLY_NAMES[b.ally] || b.ally) : null,
                     expiry: data.expiry,
                 }
             })
