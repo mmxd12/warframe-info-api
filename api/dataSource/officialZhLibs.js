@@ -12,6 +12,17 @@ const TARGET_FILES = [
     'ExportResources_zh.json',
     'ExportWarframes_zh.json',
     'ExportWeapons_zh.json',
+    'ExportUpgrades_zh.json',
+    'ExportCustoms_zh.json',
+    'ExportKeys_zh.json',
+    'ExportRecipes_zh.json',
+    'ExportRelicArcane_zh.json',
+    'ExportFlavour_zh.json',
+    'ExportGear_zh.json',
+    'ExportDrones_zh.json',
+    'ExportSentinels_zh.json',
+    'ExportFusionBundles_zh.json',
+    'ExportSortieRewards_zh.json',
 ]
 
 const hasChinese = s => /[一-\u9fff]/.test(s)
