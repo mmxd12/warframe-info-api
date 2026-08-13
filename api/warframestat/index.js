@@ -114,10 +114,12 @@ const enrichBounties = async (ws) => {
             const dzRaw = await getText('https://browse.wf/warframe-public-export-plus/dict.zh.json', {}, { signal: dzCtrl.signal })
             clearTimeout(dzT)
             zhDict = JSON.parse(dzRaw) || {}
-            // 从词库（Nyx）自动适配节点中文名，不再硬编码
+            // 从词库（Nyx）自动适配节点中文名
             // WFCD 的 solNodes 数据已合并到 Nyx 词库，key 为 SolNode232，value 为 { en, zh }
-            // 若词库未初始化（首次启动尚未跑完 schedule），则 fallback 到原始 SolNode 名
+            // missionType 通过 SolNode232_type 词条获取（wfcdLibs 额外生成）
+            // 若词库未初始化（首次启动尚未跑完 schedule），则 fallback 到原始值
             const nodeEntry = libs && libs.Nyx ? libs.Nyx.get(b.node) : null
+            const typeEntry = libs && libs.Nyx ? libs.Nyx.get(b.node + '_type') : null
         } catch (_) { /* 拉取失败时回退 */ }
         const SYNDICATE_MAP = {
             'ZarimanSyndicate': 'The Holdfasts',
@@ -149,7 +151,7 @@ const enrichBounties = async (ws) => {
                     id: `${oracleTag}_${i}`,
                     type: zhDict[ch.name] || typeKey,
                     node: nodeEntry ? nodeEntry.zh : b.node || 'Unknown',
-                    missionType: '',
+                    missionType: typeEntry ? typeEntry.zh : '',
                     enemyLevel: levels[i] || '',
                     reward: rewards[i] || '',
                     ally: b.ally || null,
