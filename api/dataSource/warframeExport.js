@@ -78,14 +78,20 @@ const build = async () => {
                 const c = clean(zmap.get(i.uniqueName) || '')
                 if (e && c && c !== e && !dict.has(e)) dict.set(e, c)
             }
-            // Regions 的星球名在 systemName 上（269 个节点重复出现同一星球），
-            // 不走 uniqueName 配对，按 systemIndex 去重单独收一遍：Mercury→水星。
+            // Regions 包含节点名和星球名：
+            // - uniqueName（SolNode232）→ name（涂沃主厅），供赏金节点翻译
+            // - systemName（Mercury）→ systemName（水星），供星球翻译
             if (name === 'Regions') {
                 const zn = new Map(rawItems(zh).map(i => [i.uniqueName, i]))
                 for (const i of rawItems(en)) {
-                    const e = clean(i.systemName || '')
-                    const c = clean((zn.get(i.uniqueName) || {}).systemName || '')
-                    if (e && c && c !== e && !dict.has(e)) dict.set(e, c)
+                    // 节点名：uniqueName → name（如 SolNode232→涂沃主厅）
+                    const eName = clean(i.uniqueName || '')
+                    const cName = clean((zn.get(i.uniqueName) || {}).name || '')
+                    if (eName && cName && cName !== eName && !dict.has(eName)) dict.set(eName, cName)
+                    // 星球名：systemName → systemName（如 Mercury→水星）
+                    const eSys = clean(i.systemName || '')
+                    const cSys = clean((zn.get(i.uniqueName) || {}).systemName || '')
+                    if (eSys && cSys && cSys !== eSys && !dict.has(eSys)) dict.set(eSys, cSys)
                 }
             }
             logger.info(`DE 导出 ${name}: +${dict.size - before} 条`)
