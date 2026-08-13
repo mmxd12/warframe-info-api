@@ -82,5 +82,10 @@
  {
   "uniqueName": "/Lotus/StoreItems/Types/Gameplay/NarmerSorties/ArchonCrystalViolet",
   "name": "紫晶执刑官源力石"
+ },
+ {
+  "uniqueName": "/Lotus/Types/Challenges/Calendar1999/CalendarKillEnemiesMedium",
+  "name": "平分秋色",
+  "description": "击杀 |COUNT| 名敌人"
  }
 ]
