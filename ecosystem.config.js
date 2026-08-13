@@ -11,7 +11,7 @@ module.exports = {
     env: {
       NODE_OPTIONS: '--no-warnings',
       NODE_ENV: 'production',
-      PORT: 18511
+      PORT: 3000
     }
   }]
 };
