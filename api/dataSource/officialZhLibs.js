@@ -3,25 +3,33 @@
 // 官方文档：https://wiki.warframe.com/w/Public_Export
 const { getJson, getText } = require('../../utils/superagent')
 const logger = require('../../utils/logger')(__filename)
-const lzma = require('lzma-native')
+const lzma = require('lzma')
 
 const INDEX_URL = 'https://origin.warframe.com/PublicExport/index_zh.txt.lzma'
 const BASE = 'http://content.warframe.com/PublicExport/Manifest/'
 
+// 用 Buffer 包装 LZMA 解压（lzma 包 API 是 callback 风格）
+const decompressLzma = (buffer) => {
+    return new Promise((resolve, reject) => {
+        // lzma 包的 decompress 接收 Uint8Array
+        const uint8 = new Uint8Array(buffer)
+        lzma.decompress(uint8, (result, err) => {
+            if (err) return reject(err)
+            // result 是 Uint8Array，转成字符串
+            const str = String.fromCharCode.apply(null, new Uint8Array(result))
+            resolve(str)
+        })
+    })
+}
+
 // 拉取索引文件，返回 [{ name, hash }]
 const fetchIndex = async () => {
     try {
-        const raw = await getText(INDEX_URL, {}, { responseType: 'arraybuffer' })
-        // LZMA 解压
-        const decompressed = await new Promise((resolve, reject) => {
-            const decoder = lzma.createDecompressor()
-            const chunks = []
-            decoder.on('data', c => chunks.push(c))
-            decoder.on('end', () => resolve(Buffer.concat(chunks).toString('utf-8')))
-            decoder.on('error', reject)
-            decoder.end(Buffer.from(raw))
-        })
-        const lines = decompressed.split('\\n').filter(Boolean)
+        const resp = await getText(INDEX_URL, {}, { responseType: 'arraybuffer' })
+        // resp 可能是 ArrayBuffer 或 Buffer
+        const buf = Buffer.isBuffer(resp) ? resp : Buffer.from(resp)
+        const text = await decompressLzma(buf)
+        const lines = text.split('\n').filter(Boolean)
         return lines.map(line => {
             const [name, hash] = line.split('!')
             return { name: name.trim(), hash: (hash || '').trim() }
@@ -33,10 +41,9 @@ const fetchIndex = async () => {
 }
 
 // 判断字符串是否包含中文
-const hasChinese = s => /[\\u4e00-\\u9fff]/.test(s)
+const hasChinese = s => /[\u4e00-\u9fff]/.test(s)
 
 // 拉取单个中文文件，提取 { en, zh } 词条
-// 不同文件的字段名不同，统一用 uniqueName 作为 key，name 作为 value
 const fetchZhFile = async (name, hash) => {
     try {
         const url = BASE + name + '!' + hash
@@ -46,8 +53,8 @@ const fetchZhFile = async (name, hash) => {
         const list = raw[key] || []
         const entries = []
         for (const item of list) {
-            const un = item.uniqueName || item.uniqueName
-            const zh = item.name || item.name
+            const un = item.uniqueName
+            const zh = item.name
             if (un && zh && hasChinese(zh)) {
                 entries.push({ en: un, zh: zh })
             }
