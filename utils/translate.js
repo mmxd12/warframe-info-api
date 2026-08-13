@@ -100,10 +100,19 @@ function regExpTest(result) {
 }
 
 function isNode(input) {
-    return /^[a-zA-Z]+ \([a-zA-Z]+\)$/.test(input);
+    return /^[a-zA-Z]+ \([a-zA-Z]+\)$/.test(input) || /^[a-zA-Z]+ [a-zA-Z]+ \([a-zA-Z]+\)$/.test(input);
 }
 
 function preRegExpTest (input) {
+    // 先查完整节点名（字典 key 不带末尾的 )，因为 getCache 会自动去掉）
+    const fullMatch = getCache(input);
+    if (fullMatch.cache) {
+        const result = fullMatch.prefix + fullMatch.cache.zh + fullMatch.suffix;
+        // 避免重复括号（suffix 是 )，zh 如果带 ) 就重复了）
+        // 取个巧：zh 不带末尾 )，由 suffix 补上
+        return result;
+    }
+    // 回退到只翻译区域
     const prefix = input.replace(/\([a-zA-Z]+\)$/, '');
     const plant = input.match(/\([a-zA-Z]+\)$/).join('');
     return prefix + getSearchStr(plant,getCache);
