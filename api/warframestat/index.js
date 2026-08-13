@@ -113,12 +113,22 @@ const enrichBounties = async (ws) => {
             const dzRaw = await getText('https://browse.wf/warframe-public-export-plus/dict.zh.json', {}, { signal: dzCtrl.signal })
             clearTimeout(dzT)
             zhDict = JSON.parse(dzRaw) || {}
-            // 拉取 WFCD 节点中文名（solNodes.json：SolNode233 -> 奥金工场(扎里曼)）
-            const nCtrl = new AbortController()
-            const nT = setTimeout(() => nCtrl.abort(), 8000)
-            const nRaw = await getText('https://cdn.jsdelivr.net/npm/warframe-worldstate-data@latest/data/zh/solNodes.json', {}, { signal: nCtrl.signal })
-            clearTimeout(nT)
-            solNodes = JSON.parse(nRaw) || {}
+            // 节点中文名硬编码（扎里曼/科维兽/1999 的 SolNode 固定不变，不依赖 CDN）
+            solNodes = {
+                'SolNode230': { value: '永视弧域(扎里曼)', type: '虚空洪流' },
+                'SolNode231': { value: '哈拉科防线(扎里曼)', type: '殲滅' },
+                'SolNode232': { value: '涂沃主厅(扎里曼)', type: '虚空覆涌' },
+                'SolNode233': { value: '奥金工场(扎里曼)', type: 'Void Armageddon' },
+                'SolNode235': { value: '翠径(扎里曼)', type: '移動防禦' },
+                'SolNode717': { value: '解剖圣所', type: '低语者歼灭' },
+                'SolNode718': { value: '解剖圣所', type: '低语者炼金' },
+                'SolNode719': { value: '解剖圣所', type: '低语者生存' },
+                'SolNode850': { value: '霍瓦尼亚中央商场', type: '1999歼灭' },
+                'SolNode851': { value: '霍瓦尼亚中央商场', type: '1999生存' },
+                'SolNode853': { value: '霍瓦尼亚地铁站', type: '1999防御' },
+                'SolNode854': { value: '霍瓦尼亚地铁站', type: '1999破坏' },
+                'SolNode856': { value: '霍瓦尼亚地铁站', type: '1999劫持' },
+            }
         } catch (_) { /* 拉取失败时回退 */ }
         const SYNDICATE_MAP = {
             'ZarimanSyndicate': 'The Holdfasts',
