@@ -185,6 +185,7 @@ GET /arb/7
 ### 以npm方式运行（合适调试）
 #### 1. 安装依赖
 ```bash
+# 请在使用本项目前自行安装nodejs、npm、git，不懂自行百度或者问AI
 # 下载项目
 git clone https://github.com/mmxd12/warframe-info-api.git
 cd warframe-info-api
@@ -208,7 +209,10 @@ npm start
 ### 以pm2方式运行（推荐）
 ### 用pm2启动
 ```bash
+# 安装依赖
+npm install -g pm2
 # 启动pm2
+cd warframe-info-api
 pm2 start ecosystem.config.js
 # 开机自启
 pm2 startup
