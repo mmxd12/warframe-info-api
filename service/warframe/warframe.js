@@ -300,6 +300,7 @@ function persistentEnemiesFormat(body) {
 function cycleFormat(body){
     body.timeLeft = utils.timeDiff(null,body.expiry);
     !body.state && ( body.state = body.active ) ;
+    if (body.state) body.state = tran.translateByCache(body.state);
     return body;
 }
 
