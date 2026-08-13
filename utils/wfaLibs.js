@@ -191,6 +191,31 @@ let initLibsCache = async () => {
     } catch (e) {
         logger.warn(`合并 WFCD 词库失败: ${(e && e.message) || e}`)
     }
+    // 合并官方中文数据到 Nyx 主词库（DE Public Export，优先级最高）
+    try {
+        const officialZh = commonMcache.get('OfficialZh') || []
+        if (Array.isArray(officialZh) && officialZh.length > 0) {
+            let filled = 0
+            for (const v of officialZh) {
+                if (!v || !v.en || !v.zh) continue
+                const en = v.en
+                const zh = String(v.zh)
+                const existing = libs.Nyx.get(en)
+                if (!existing) {
+                    libs.Nyx.put(en, { en, zh })
+                    filled++
+                } else if (!existing.zh || existing.zh === existing.en) {
+                    existing.zh = zh
+                    filled++
+                }
+            }
+            logger.info(`OfficialZh 合并 Nyx:${filled} 条，Nyx 总数:${libs.Nyx.size()}`)
+        }
+    } catch (e) {
+        logger.warn(`合并官方中文词库失败: ${(e && e.message) || e}`)
+    }
+
+
 
     // wmr2rma()
     wmr2rma()
