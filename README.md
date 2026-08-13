@@ -11,8 +11,11 @@
 ### 1. Warframe 世界状态  `/wf/:type`
 支持**中英文**直达，例如：
 - `/wf/电波` 或 `/wf/nightwave` → 电波信息
+- `/wf/警报` 或 `/wf/alerts` → 警报信息
 - `/wf/突击` 或 `/wf/sortie` → 突击任务
+- `/wf/活动` 或 `/wf/events` → 活动详情
 - `/wf/裂缝` 或 `/wf/fissures` → 虚空裂缝
+- `/wf/入侵` 或 `/wf/invasions` → 入侵事件
 - `/wf/钢铁裂缝` 或 `/wf/steelFissures` → 钢铁裂缝（仅显示 isHard 的裂缝）
 - `/wf/九重天` 或 `/wf/railjack` → 九重天/航道星舰裂缝（前哨战/爆发任务）
 - `/wf/奸商` 或 `/wf/voidTrader` → 奸商 Baro
@@ -23,14 +26,14 @@
 - `/wf/地球赏金` 或 `/wf/ostrons` → 地球平原赏金
 - `/wf/金星赏金` 或 `/wf/solaris` → 金星平原赏金
 - `/wf/火卫二赏金` 或 `/wf/entrati` → 火卫二平原赏金
-- `/wf/科维兽` 或 `/wf/cavia` → 科维兽/扎里曼赏金任务
+- `/wf/科维兽` 或 `/wf/cavia` → 科维兽
+- `/wf/扎里曼` 或 `/wf/zarimanCycle` → 扎里曼赏金任务
 - `/wf/1999赏金` 或 `/wf/hex` → 1999/Höllvania 六人组赏金任务
 - `/wf/深层科研` 或 `/wf/时光科研` → 深层/时光科研（archimedeas，含中文术语翻译）；`/wf/科研` 返回两者全量
-- 
-- 
+- `/wf/仲裁` 或 `/wf/arbitration` →当前仲裁状态
 - `/wf/双衍王境` 或 `/wf/duviriCycle` → 螺旋情绪 + 两档回环轮换全量
 
-**更多支持的类型**：`timestamp`（服务器时间）、`news`（新闻）、`events`（活动）、`alerts`（警报）、`invasions`（入侵）、`flashSales`（促销）、`dailyDeals`（达尔沃）、`persistentEnemies`（小小黑）、`earthCycle`（地球昼夜）、`cetusCycle`（希图斯昼夜）、`vallisCycle`（福尔图娜温度）、`cambionCycle`（火卫二循环）、`zarimanCycle`（扎里曼）、`arbitration`（仲裁）、`constructionProgress`（舰队建造）、`simaris`（中枢 Simaris 声望目标）、`sentientOutposts`（无形者先遣舰）、`clanWeeklyInitiative`（氏族每周倡议）、`conclaveChallenges`（武形秘仪挑战）
+**更多支持的类型**：`timestamp`（服务器时间）、`news`（新闻）、`flashSales`（促销）、`dailyDeals`（达尔沃）、`persistentEnemies`（小小黑）、`earthCycle`（地球昼夜）、`cetusCycle`（希图斯昼夜）、`vallisCycle`（福尔图娜温度）、`cambionCycle`（火卫二循环）、`constructionProgress`（舰队建造）、`simaris`（中枢 Simaris 声望目标）、`sentientOutposts`（无形者先遣舰）、`clanWeeklyInitiative`（氏族每周倡议）、`conclaveChallenges`（武形秘仪挑战）
 
 完整别名表见 `/wf/list` 的 `alias` 字段，或 `utils/dict/wfTypeAlias.json`。
 
@@ -38,6 +41,42 @@
 > `/wf/双衍王境` 里的 `expiry` 仍是 2 小时一轮的螺旋情绪剩余时间，每周重置时间另放 `rotationExpiry`/`rotationEta`。
 
 也可用 query 参数：`/wf?type=电波`
+
+###仲裁表
+查询仲裁任务的精华/小时、品质、节点。
+
+```
+GET /arb
+GET /arb/:days
+```
+
+| 参数 | 类型 | 说明 |
+|------|------|------|
+| days | int | 可选，查询天数，默认7，最多30 |
+
+**示例：**
+```
+GET /arb/7
+```
+
+**返回：**
+```json
+{
+  "success": true,
+  "data": [
+    {
+      "node": "V Prime (金星)",
+      "missionType": "生存",
+      "essence": 350,
+      "quality": "B",
+      "eta": "17m 33s"
+    }
+  ]
+}
+```
+
+品质分级：S(≥400) > B(≥350) > C(≥300) > D(<300)
+
 
 ---
 
@@ -140,7 +179,7 @@ curl -X POST -H 'Content-Type:application/json' \
 ---
 
 ## 如何运行
-
+###以npm方式运行（合适调试）
 #### 1. 安装依赖
 ```bash
 # 下载项目
@@ -163,55 +202,32 @@ yarn start
 npm start
 ```
 
-### 3. 用pm2启动
+###以pm2方式运行（推荐）
+### 用pm2启动
 ```bash
+# 启动pm2
 pm2 start ecosystem.config.js
+# 开机自启
+pm2 startup
+pm2 save
+# 常用命令
 pm2 logs warframe-info-api    # 看日志
 pm2 restart warframe-info-api  # 重启
 pm2 stop warframe-info-api     # 停止
 ```
 
+##两者对比
+---
+npm start	 ｜ pm2
+关掉终端	｜ ❌ ｜ 服务就停了	｜ ✅ ｜ 继续运行
+进程崩溃	｜ ❌ ｜ 挂了就挂了	｜ ✅ ｜ 自动重启
+开机自启	｜ ❌ ｜ 手动启动	 ｜ ｜ ✅ pm2 startup 开机自启
+日志	｜ ❌ ｜ 手动重定向	 ｜ ✅ ｜ 自带日志管理
+监控	｜ ❌ ｜ 无	✅ ｜ pm2 monit 看CPU/内存
+---
+
 默认端口 3000。如需修改端口或配置 HTTPS 证书，请编辑 `bin/www`。
-
----
-
-### 仲裁精华表
-
-查询仲裁任务的精华/小时、品质、节点。
-
-```
-GET /arb
-GET /arb/:days
-```
-
-| 参数 | 类型 | 说明 |
-|------|------|------|
-| days | int | 可选，查询天数，默认7，最多30 |
-
-**示例：**
-```
-GET /arb/7
-```
-
-**返回：**
-```json
-{
-  "success": true,
-  "data": [
-    {
-      "node": "V Prime (金星)",
-      "missionType": "生存",
-      "essence": 350,
-      "quality": "B",
-      "eta": "17m 33s"
-    }
-  ]
-}
-```
-
-品质分级：S(≥400) > B(≥350) > C(≥300) > D(<300)
-
----
+如果需要修改pm2端口请修改 ecosystem.config.js
 
 ## 技术栈
 - Node.js + Express
@@ -224,5 +240,7 @@ GET /arb/7
 - 这里给astrbot写了插件和rag可以自行使用
 - [astrbot插件](https://github.com/mmxd12/astrbot_plugin_wfrag_tool)
 - [rag索引](https://github.com/mmxd12/wf-rag-pack)
-- 有问题可以提[issues](https://github.com/mmxd12/warframe-info-api/issues)
+
+## 其他
+- 你如果有其他疑问或者建议欢迎提出[issues](https://github.com/mmxd12/warframe-info-api/issues)
 - 或者你可以进群435021808和我们进行友好交流
