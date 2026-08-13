@@ -226,5 +226,41 @@
  {
   "en": "/Lotus/Language/Missions/MissionName_PvPvE",
   "zh": "小队对战"
+ },
+ {
+  "en": "SolNode850",
+  "zh": "传承种收割"
+ },
+ {
+  "en": "SolNode851",
+  "zh": "地狱净化：炽蛇军"
+ },
+ {
+  "en": "SolNode852",
+  "zh": "地狱净化：科腐者"
+ },
+ {
+  "en": "SolNode853",
+  "zh": "歼灭：炽蛇军"
+ },
+ {
+  "en": "SolNode854",
+  "zh": "歼灭：科腐者"
+ },
+ {
+  "en": "SolNode855",
+  "zh": "对战：小队 VS 小队"
+ },
+ {
+  "en": "SolNode856",
+  "zh": "刺杀：H-09 坦克"
+ },
+ {
+  "en": "SolNode857",
+  "zh": "对战：小队独战"
+ },
+ {
+  "en": "SolNode858",
+  "zh": "至日广场"
  }
 ]
