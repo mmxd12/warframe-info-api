@@ -35,18 +35,6 @@ let setWfaLibCache = async () => {
     } catch (e) {
         logger.warn(`${head} -- WFCD dicts 拉取失败: ${e.message}`)
     }
-
-    // 拉取官方中文数据（DE Public Export，自动获取索引+哈希）
-    try {
-        const { getOfficialZhDicts } = require('../api/dataSource/officialZhLibs')
-        const officialZh = await getOfficialZhDicts()
-        if (officialZh && officialZh.length > 0) {
-            mergedLibData.OfficialZh = officialZh
-            logger.info(`${head} -- OfficialZh dicts: ${officialZh.length} 条`)
-        }
-    } catch (e) {
-        logger.warn(`${head} -- OfficialZh dicts 拉取失败: ${e.message}`)
-    }
     logger.info(`${head} mergedLibData:{${Object.keys(mergedLibData)}} ${new Date().getTime() - start} ms`)
     // save lib to cache
     cache.put(cacheKey, mergedLibData)
