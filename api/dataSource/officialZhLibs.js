@@ -1,7 +1,7 @@
 // 官方 DE Public Export 中文数据源
 // 从 index_zh.txt.lzma 获取文件列表+哈希，再逐个下载中文 JSON 文件
 // 官方文档：https://wiki.warframe.com/w/Public_Export
-const { getJson, getText } = require('../../utils/superagent')
+const { getJson, getBuffer } = require('../../utils/superagent')
 const logger = require('../../utils/logger')(__filename)
 const lzma = require('lzma')
 
@@ -25,9 +25,7 @@ const decompressLzma = (buffer) => {
 // 拉取索引文件，返回 [{ name, hash }]
 const fetchIndex = async () => {
     try {
-        const resp = await getText(INDEX_URL, {}, { responseType: 'arraybuffer' })
-        // resp 可能是 ArrayBuffer 或 Buffer
-        const buf = Buffer.isBuffer(resp) ? resp : Buffer.from(resp)
+        const buf = await getBuffer(INDEX_URL)
         const text = await decompressLzma(buf)
         const lines = text.split('\n').filter(Boolean)
         return lines.map(line => {
