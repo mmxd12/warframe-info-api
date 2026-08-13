@@ -48,16 +48,7 @@ const warframe = {
             case "railjack":
                 return fissuresFormat(orginInfo).filter(f =>
                     f.isStorm === true
-                ).map(f => {
-                    f.node = f.node
-                        .replace(/\(地球\)$/, '(地球比邻星域)')
-                        .replace(/\(金星\)$/, '(金星比邻星域)')
-                        .replace(/\(土星\)$/, '(土星比邻星域)')
-                        .replace(/\(海王星\)$/, '(海王星比邻星域)')
-                        .replace(/\(冥王星\)$/, '(冥王星比邻星域)')
-                        .replace(/\(面纱比邻星\)$/, '(面纱比邻星域)');
-                    return f;
-                });
+                );
             case "flashSales":
                 return flashSalesFormat(orginInfo);
             case "invasions":
