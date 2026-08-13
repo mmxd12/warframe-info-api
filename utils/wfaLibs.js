@@ -50,18 +50,24 @@ const wmLibURLArr = [ 'ephemeras','quirks']
 const commonMcache = new mcache.Cache()
 
 let initLibsCache = async () => {
-    // 自动删除所有快照，确保每次重启都拉取最新词库
+    // 清理超过24小时的旧快照，没有过期快照才重新拉取
     try {
         const fs = require('fs')
         const path = require('path')
         const snapDir = path.join(__dirname, '..', 'api', 'dataSource')
+        const now = Date.now()
+        const maxAge = 24 * 60 * 60 * 1000 // 24小时
         for (const f of fs.readdirSync(snapDir)) {
             if (f.endsWith('_snapshot.json') || f === 'de_dict_snapshot.json') {
-                fs.unlinkSync(path.join(snapDir, f))
-                console.log(`自动删除快照: ${f}`)
+                const fp = path.join(snapDir, f)
+                const stat = fs.statSync(fp)
+                if (now - stat.mtimeMs > maxAge) {
+                    fs.unlinkSync(fp)
+                    console.log(`快照已过期，自动删除: ${f}`)
+                }
             }
         }
-    } catch (e) { /* 删快照失败不影响启动 */ }
+    } catch (e) { /* 清理快照失败不影响启动 */ }
     // Setp 0:
     //  从schedule cache获取最新词库
     let library = await wfaLibrarySchedule.getWfaLibCache();
