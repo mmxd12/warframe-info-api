@@ -9,6 +9,7 @@ const calendar = require('./calendar')
 // warframe-worldstate-parser 依赖 class-transformer/class-validator 的装饰器元数据，
 // 必须在解析器加载前引入 reflect-metadata，否则会报 Reflect.getMetadata is not a function
 require('reflect-metadata')
+const { libs } = require('../../utils/wfaLibs')
 
 // warframestat.us 在部分地区需要代理。改为直接取 DE 官方 CDN 的原始 worldState（这也是 warframestat.us
 // 与 NyxBot 共同的上游数据源），再用 warframe-worldstate-parser 本地解析成一致结构，下游无需改动。
@@ -113,22 +114,10 @@ const enrichBounties = async (ws) => {
             const dzRaw = await getText('https://browse.wf/warframe-public-export-plus/dict.zh.json', {}, { signal: dzCtrl.signal })
             clearTimeout(dzT)
             zhDict = JSON.parse(dzRaw) || {}
-            // 节点中文名硬编码（扎里曼/科维兽/1999 的 SolNode 固定不变，不依赖 CDN）
-            solNodes = {
-                'SolNode230': { value: '永视弧域(扎里曼)', type: '虚空洪流' },
-                'SolNode231': { value: '哈拉科防线(扎里曼)', type: '殲滅' },
-                'SolNode232': { value: '涂沃主厅(扎里曼)', type: '虚空覆涌' },
-                'SolNode233': { value: '奥金工场(扎里曼)', type: 'Void Armageddon' },
-                'SolNode235': { value: '翠径(扎里曼)', type: '移動防禦' },
-                'SolNode717': { value: '解剖圣所', type: '低语者歼灭' },
-                'SolNode718': { value: '解剖圣所', type: '低语者炼金' },
-                'SolNode719': { value: '解剖圣所', type: '低语者生存' },
-                'SolNode850': { value: '霍瓦尼亚中央商场', type: '1999歼灭' },
-                'SolNode851': { value: '霍瓦尼亚中央商场', type: '1999生存' },
-                'SolNode853': { value: '霍瓦尼亚地铁站', type: '1999防御' },
-                'SolNode854': { value: '霍瓦尼亚地铁站', type: '1999破坏' },
-                'SolNode856': { value: '霍瓦尼亚地铁站', type: '1999劫持' },
-            }
+            // 从词库（Nyx）自动适配节点中文名，不再硬编码
+            // WFCD 的 solNodes 数据已合并到 Nyx 词库，key 为 SolNode232，value 为 { en, zh }
+            // 若词库未初始化（首次启动尚未跑完 schedule），则 fallback 到原始 SolNode 名
+            const nodeEntry = libs && libs.Nyx ? libs.Nyx.get(b.node) : null
         } catch (_) { /* 拉取失败时回退 */ }
         const SYNDICATE_MAP = {
             'ZarimanSyndicate': 'The Holdfasts',
@@ -159,8 +148,8 @@ const enrichBounties = async (ws) => {
                 return {
                     id: `${oracleTag}_${i}`,
                     type: zhDict[ch.name] || typeKey,
-                    node: nodeInfo.value || b.node || 'Unknown',
-                    missionType: nodeInfo.type || '',
+                    node: nodeEntry ? nodeEntry.zh : b.node || 'Unknown',
+                    missionType: '',
                     enemyLevel: levels[i] || '',
                     reward: rewards[i] || '',
                     ally: b.ally || null,
