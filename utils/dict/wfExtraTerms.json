@@ -1,27 +1,154 @@
 [
-  { "en": "Orokin", "zh": "奥罗金" },
-  { "en": "The Murmur", "zh": "低语者" },
-  { "en": "Man in the Wall", "zh": "墙中人" },
-  { "en": "Varzia", "zh": "瓦奇娅" },
-  { "en": "Archon Nira", "zh": "执刑官混沌蛇主" },
-  { "en": "Ostrons", "zh": "欧斯顿" },
-  { "en": "Cavia", "zh": "科维兽" },
-  { "en": "The Holdfasts", "zh": "坚守者" },
-  { "en": "Mission Kill XP", "zh": "任务击杀经验" },
-  { "en": "is multiplied by", "zh": "乘以" },
-  { "en": "Capture the Cephalon", "zh": "夺取中枢" },
-  { "en": "Liberator", "zh": "解放者" },
-  { "en": "Team Annihilation", "zh": "团队歼灭" },
-  { "en": "Lunaro", "zh": "鲁那罗" },
-  { "en": "Console Pack", "zh": "主机组合包" },
-  { "en": "Supporter Pack", "zh": "支持者组合包" },
-  { "en": "Gemini Sup Pack", "zh": "双子组合包" },
-  { "en": "Single Pack", "zh": "单组合包" },
-  { "en": "Dual Pack", "zh": "双组合包" },
-  { "en": "Sortie Rewards", "zh": "突击奖励" },
-  { "en": "Archon Sortie Rewards", "zh": "执刑官突击奖励" },
-  { "en": "Skirmish", "zh": "小规模冲突" },
-  { "en": "Team Energy Totem", "zh": "团队能量图腾" },
-  { "en": "Syndicate Team Energy Totem", "zh": "集团团队能量图腾" },
-  { "en": "Distill Points", "zh": "蒸馏点数" }
+ {
+  "en": "Orokin",
+  "zh": "奥罗金"
+ },
+ {
+  "en": "The Murmur",
+  "zh": "低语者"
+ },
+ {
+  "en": "Man in the Wall",
+  "zh": "墙中人"
+ },
+ {
+  "en": "Varzia",
+  "zh": "瓦奇娅"
+ },
+ {
+  "en": "Archon Nira",
+  "zh": "执刑官混沌蛇主"
+ },
+ {
+  "en": "Ostrons",
+  "zh": "欧斯顿"
+ },
+ {
+  "en": "Cavia",
+  "zh": "科维兽"
+ },
+ {
+  "en": "The Holdfasts",
+  "zh": "坚守者"
+ },
+ {
+  "en": "Mission Kill XP",
+  "zh": "任务击杀经验"
+ },
+ {
+  "en": "is multiplied by",
+  "zh": "乘以"
+ },
+ {
+  "en": "Capture the Cephalon",
+  "zh": "夺取中枢"
+ },
+ {
+  "en": "Liberator",
+  "zh": "解放者"
+ },
+ {
+  "en": "Team Annihilation",
+  "zh": "团队歼灭"
+ },
+ {
+  "en": "Lunaro",
+  "zh": "鲁那罗"
+ },
+ {
+  "en": "Console Pack",
+  "zh": "主机组合包"
+ },
+ {
+  "en": "Supporter Pack",
+  "zh": "支持者组合包"
+ },
+ {
+  "en": "Gemini Sup Pack",
+  "zh": "双子组合包"
+ },
+ {
+  "en": "Single Pack",
+  "zh": "单组合包"
+ },
+ {
+  "en": "Dual Pack",
+  "zh": "双组合包"
+ },
+ {
+  "en": "Sortie Rewards",
+  "zh": "突击奖励"
+ },
+ {
+  "en": "Archon Sortie Rewards",
+  "zh": "执刑官突击奖励"
+ },
+ {
+  "en": "Skirmish",
+  "zh": "小规模冲突"
+ },
+ {
+  "en": "Team Energy Totem",
+  "zh": "团队能量图腾"
+ },
+ {
+  "en": "Syndicate Team Energy Totem",
+  "zh": "集团团队能量图腾"
+ },
+ {
+  "en": "Distill Points",
+  "zh": "蒸馏点数"
+ },
+ {
+  "en": "warm",
+  "zh": "温暖"
+ },
+ {
+  "en": "cold",
+  "zh": "寒冷"
+ },
+ {
+  "en": "hot",
+  "zh": "炎热"
+ },
+ {
+  "en": "freeze",
+  "zh": "冰冻"
+ },
+ {
+  "en": "Hands Full",
+  "zh": "满载任务"
+ },
+ {
+  "en": "Match Complete",
+  "zh": "比赛完成"
+ },
+ {
+  "en": "Match Won",
+  "zh": "比赛获胜"
+ },
+ {
+  "en": "For Science!",
+  "zh": "为了科学！"
+ },
+ {
+  "en": "Mode",
+  "zh": "模式"
+ },
+ {
+  "en": "Complete",
+  "zh": "完成"
+ },
+ {
+  "en": "Conditioning",
+  "zh": "特训"
+ },
+ {
+  "en": "Kela De Thaym",
+  "zh": "凯拉·德·塞姆"
+ },
+ {
+  "en": "Void Armageddon",
+  "zh": "虚空装甲会战"
+ }
 ]
