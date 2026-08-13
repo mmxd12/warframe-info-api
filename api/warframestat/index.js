@@ -102,6 +102,7 @@ const enrichBounties = async (ws) => {
         let challengeNames = {}
         let zhDict = {}
         let solNodes = {}
+        let nodeEntry = null, typeEntry = null
         try {
             const ctrl = new AbortController()
             const t = setTimeout(() => ctrl.abort(), 8000)
@@ -114,13 +115,12 @@ const enrichBounties = async (ws) => {
             const dzRaw = await getText('https://browse.wf/warframe-public-export-plus/dict.zh.json', {}, { signal: dzCtrl.signal })
             clearTimeout(dzT)
             zhDict = JSON.parse(dzRaw) || {}
-            // 从词库（Nyx）自动适配节点中文名
-            // WFCD 的 solNodes 数据已合并到 Nyx 词库，key 为 SolNode232，value 为 { en, zh }
-            // missionType 通过 SolNode232_type 词条获取（wfcdLibs 额外生成）
-            // 若词库未初始化（首次启动尚未跑完 schedule），则 fallback 到原始值
-            const nodeEntry = libs && libs.Nyx ? libs.Nyx.get(b.node) : null
-            const typeEntry = libs && libs.Nyx ? libs.Nyx.get(b.node + '_type') : null
         } catch (_) { /* 拉取失败时回退 */ }
+        // 从词库（Nyx）自动适配节点中文名和任务类型。
+        // WFCD 的 solNodes 数据已合并到 Nyx 词库，key 为 SolNode232，value 为 { en, zh }。
+        // missionType 通过 SolNode232_type 词条获取（wfcdLibs 额外生成）。
+        // 在 map 回调中执行 get 而不是在 try 块中，避免变量作用域问题。
+        // 若词库未初始化（首次启动尚未跑完 schedule），则 fallback 到原始值。
         const SYNDICATE_MAP = {
             'ZarimanSyndicate': 'The Holdfasts',
             'EntratiLabSyndicate': 'Cavia',
@@ -147,11 +147,13 @@ const enrichBounties = async (ws) => {
                 const nodeInfo = solNodes[b.node] || {}
                 const levels = LEVELS[oracleTag] || []
                 const rewards = REWARDS[oracleTag] || []
+                const _nodeEntry = libs && libs.Nyx ? libs.Nyx.get(b.node) : null
+                const _typeEntry = libs && libs.Nyx ? libs.Nyx.get(b.node + '_type') : null
                 return {
                     id: `${oracleTag}_${i}`,
                     type: zhDict[ch.name] || typeKey,
-                    node: nodeEntry ? nodeEntry.zh : b.node || 'Unknown',
-                    missionType: typeEntry ? typeEntry.zh : '',
+                    node: _nodeEntry ? _nodeEntry.zh : b.node || 'Unknown',
+                    missionType: _typeEntry ? _typeEntry.zh : '',
                     enemyLevel: levels[i] || '',
                     reward: rewards[i] || '',
                     ally: b.ally || null,
