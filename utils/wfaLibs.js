@@ -106,7 +106,7 @@ let initLibsCache = async () => {
         let filled = 0
         extraDict.forEach(v => {
             if (!v || !v.en || !v.zh) return
-            if (libs.Nyx.get(v.en)) return
+            // 总是覆盖（包括已存在的），用于繁转简覆盖 WFCD 繁体词条
             libs.Nyx.put(v.en, { en: v.en, zh: v.zh })
             filled++
         })
