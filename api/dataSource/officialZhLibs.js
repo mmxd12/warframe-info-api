@@ -1,86 +1,92 @@
-// 官方 DE Public Export 中文数据源
-// 从 index_zh.txt.lzma 获取文件列表+哈希，再逐个下载中文 JSON 文件
-// 官方文档：https://wiki.warframe.com/w/Public_Export
-const { getJson, getBuffer } = require('../../utils/superagent')
+// 官方 DE Public Export 中文数据源（精简版：只下载关键文件）
+const { getJson } = require('../../utils/superagent')
 const logger = require('../../utils/logger')(__filename)
 const lzma = require('lzma')
 
 const INDEX_URL = 'https://origin.warframe.com/PublicExport/index_zh.txt.lzma'
 const BASE = 'http://content.warframe.com/PublicExport/Manifest/'
 
-// 用 Buffer 包装 LZMA 解压（lzma 包 API 是 callback 风格）
-const decompressLzma = (buffer) => {
-    return new Promise((resolve, reject) => {
-        // lzma 包的 decompress 接收 Uint8Array
-        const uint8 = new Uint8Array(buffer)
-        lzma.decompress(uint8, (result, err) => {
-            if (err) return reject(err)
-            // result 是 Uint8Array，转成字符串
-            const str = String.fromCharCode.apply(null, new Uint8Array(result))
-            resolve(str)
-        })
-    })
-}
+// 只下载这几个关键文件（节点名、战甲名、武器名等），不下载全部16个
+const TARGET_FILES = [
+    'ExportRegions_zh.json',
+    'ExportResources_zh.json',
+    'ExportWarframes_zh.json',
+    'ExportWeapons_zh.json',
+]
 
-// 拉取索引文件，返回 [{ name, hash }]
+const hasChinese = s => /[一-\u9fff]/.test(s)
+
+// 解压 LZMA（callback 风格 → Promise）
+const decompressLzma = (buffer) => new Promise((resolve, reject) => {
+    lzma.decompress(new Uint8Array(buffer), (result, err) => {
+        if (err) return reject(err)
+        resolve(String.fromCharCode.apply(null, new Uint8Array(result)))
+    })
+})
+
+// 拉取索引，返回 { filename: hash }
 const fetchIndex = async () => {
     try {
-        const buf = await getBuffer(INDEX_URL)
-        const text = await decompressLzma(buf)
-        const lines = text.split('\n').filter(Boolean)
-        return lines.map(line => {
-            const [name, hash] = line.split('!')
-            return { name: name.trim(), hash: (hash || '').trim() }
+        const https = require('https')
+        const req = new Promise((resolve, reject) => {
+            https.get(INDEX_URL, { headers: { 'User-Agent': 'Mozilla/5.0', 'Referer': 'https://www.warframe.com/' } }, (res) => {
+                const chunks = []
+                res.on('data', c => chunks.push(c))
+                res.on('end', () => resolve(Buffer.concat(chunks)))
+                res.on('error', reject)
+            }).on('error', reject)
         })
+        const buf = await req
+        const text = await decompressLzma(buf)
+        const result = {}
+        for (const line of text.split('\n').filter(Boolean)) {
+            const [name, hash] = line.split('!')
+            if (name && hash) result[name.trim()] = hash.trim()
+        }
+        logger.info(`[officialZh] 索引解析完成，${Object.keys(result).length} 个文件`)
+        return result
     } catch (e) {
         logger.warn(`[officialZh] 索引拉取失败: ${(e && e.message) || e}`)
-        return []
+        return {}
     }
 }
 
-// 判断字符串是否包含中文
-const hasChinese = s => /[\u4e00-\u9fff]/.test(s)
-
-// 拉取单个中文文件，提取 { en, zh } 词条
-const fetchZhFile = async (name, hash) => {
-    try {
-        const url = BASE + name + '!' + hash
-        const raw = await getJson(url)
-        // 格式：{ "ExportXXX": [ { "uniqueName": "...", "name": "...", ... } ] }
-        const key = Object.keys(raw)[0]
-        const list = raw[key] || []
-        const entries = []
-        for (const item of list) {
-            const un = item.uniqueName
-            const zh = item.name
-            if (un && zh && hasChinese(zh)) {
-                entries.push({ en: un, zh: zh })
-            }
+// 并行下载关键文件，提取 { en, zh } 词条
+const fetchZhFiles = async (index) => {
+    const entries = []
+    const promises = TARGET_FILES.map(async (name) => {
+        const hash = index[name]
+        if (!hash) {
+            logger.warn(`[officialZh] 未找到 ${name}`)
+            return
         }
-        logger.info(`[officialZh] ${name}: ${entries.length} 条中文词条`)
-        return entries
-    } catch (e) {
-        logger.warn(`[officialZh] ${name} 拉取失败: ${(e && e.message) || e}`)
-        return []
-    }
+        try {
+            const url = BASE + name + '!' + hash
+            const raw = await getJson(url)
+            const key = Object.keys(raw)[0]
+            const list = raw[key] || []
+            for (const item of list) {
+                const un = item.uniqueName
+                const zh = item.name
+                if (un && zh && hasChinese(zh)) {
+                    entries.push({ en: un, zh: zh })
+                }
+            }
+            logger.info(`[officialZh] ${name}: ${list.length} 条，含中文 ${entries.filter(e => e.zh === zh).length} 条`)
+        } catch (e) {
+            logger.warn(`[officialZh] ${name} 拉取失败: ${(e && e.message) || e}`)
+        }
+    })
+    await Promise.all(promises)
+    logger.info(`[officialZh] 完成，共 ${entries.length} 条中文词条`)
+    return entries
 }
 
-// 拉取全部官方中文数据，返回 [{ en, zh }]
+// 主入口
 const getOfficialZhDicts = async () => {
     const index = await fetchIndex()
-    if (!index.length) {
-        logger.warn('[officialZh] 索引为空，跳过')
-        return []
-    }
-    logger.info(`[officialZh] 索引共 ${index.length} 个文件`)
-    // 逐个拉取（不并行，避免被限制）
-    const all = []
-    for (const { name, hash } of index) {
-        const entries = await fetchZhFile(name, hash)
-        all.push(...entries)
-    }
-    logger.info(`[officialZh] 拉取完成，共 ${all.length} 条中文词条`)
-    return all
+    if (!Object.keys(index).length) return []
+    return await fetchZhFiles(index)
 }
 
 module.exports = { getOfficialZhDicts }
