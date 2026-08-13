@@ -159,7 +159,7 @@ const enrichBounties = async (ws) => {
                     id: `${oracleTag}_${i}`,
                     type: zhDict[ch.name] || typeKey,
                     node: _nodeEntry ? _nodeEntry.zh : b.node || 'Unknown',
-                    missionType: _typeEntry ? _typeEntry.zh : '',
+                    missionType: _typeEntry ? _typeEntry.zh : (b.type ? (libs.Nyx.get(b.type) ? libs.Nyx.get(b.type).zh : (libs.Nyx.get(b.type.replace(/ /g, '')) ? libs.Nyx.get(b.type.replace(/ /g, '')).zh : b.type)) : ''),
                     enemyLevel: levels[i] || '',
                     reward: rewards[i] || '',
                     ally: b.ally ? (ALLY_NAMES[b.ally] || b.ally) : null,
