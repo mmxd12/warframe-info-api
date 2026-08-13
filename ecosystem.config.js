@@ -1,6 +1,6 @@
 module.exports = {
   apps: [{
-    name: 'warframe-info-api',
+    name: 'wf-api',
     script: './bin/www',
     instances: 1,
     exec_mode: 'fork',
