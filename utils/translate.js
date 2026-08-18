@@ -19,14 +19,11 @@ const translateApi = {
     // 专有名词——子串替换会把 "Nami Solo" 这种词组拆散或半译。
     translateWord: function (word) {
         if (!word) return null;
-        const hit = wfaLibs.libs.Nyx.get(word) || wfaLibs.libs.Dict.get(word) || wfaLibs.libs.wm.get(word);
-        if (hit && hit.zh) return hit.zh;
+        const zh = lookupZh(word);
+        if (zh) return zh;
         // 黑话兜底：磁妹 -> Mag -> 麦格（若词库有官方英文名）
         const en = wfaLibs.libs.Alias.get(word);
-        if (en && en !== word) {
-            const hit2 = wfaLibs.libs.Nyx.get(en) || wfaLibs.libs.Dict.get(en) || wfaLibs.libs.wm.get(en);
-            return hit2 && hit2.zh ? hit2.zh : null;
-        }
+        if (en && en !== word) return lookupZh(en);
         return null;
     },
     // 黑话映射：玩家黑话（水男/奶爸/磁妹）-> 官方英文名（Hydroid/Oberon/Mag）。
@@ -67,6 +64,21 @@ const translateApi = {
             .slice(0,max)
     }
 };
+
+// 整词查中文名。Nyx/Dict/wm 是 {en,zh} 结构；wmRiven/auctionsWeapons 只有 i18n，
+// 武器名（鳄神/Sobek、赤毒·鳄神）只在后两个词库里，所以要一起兜底。
+function lookupZh(word) {
+    const flat = wfaLibs.libs.Nyx.get(word) || wfaLibs.libs.Dict.get(word) || wfaLibs.libs.wm.get(word)
+    if (flat && flat.zh) return flat.zh
+    for (const lib of ['wmRiven', 'auctionsWeapons', 'ephemeras', 'quirks']) {
+        const cache = wfaLibs.libs[lib]
+        if (!cache || typeof cache.get !== 'function') continue
+        const hit = cache.get(word)
+        const name = hit && hit.i18n && hit.i18n['zh-hans'] && hit.i18n['zh-hans'].name
+        if (name) return name
+    }
+    return null
+}
 
 // wm 系词库（wmRiven/auctionsWeapons/ephemeras…）只有 i18n 结构，没有顶层 en/zh，
 // 会被 fuzzTran 的 en 去重当成 undefined 折叠掉。这里补齐 en/zh，
