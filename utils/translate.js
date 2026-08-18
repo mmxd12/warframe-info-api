@@ -58,7 +58,7 @@ const translateApi = {
         return libArray
             .map(lib => utils.getSaleWordFromLib(_key, wfaLibs.libs[lib])
                 .map(v => {
-                    return {...v, ...wfaLibs.libs[lib].get(v.key)}
+                    return normalizeWord({...v, ...wfaLibs.libs[lib].get(v.key), lib})
                 }))
             .flatMap(v => v)
             .filter((v, i, arr) => i === arr.map(_v => _v.en).indexOf(v.en))
@@ -67,6 +67,20 @@ const translateApi = {
             .slice(0,max)
     }
 };
+
+// wm 系词库（wmRiven/auctionsWeapons/ephemeras…）只有 i18n 结构，没有顶层 en/zh，
+// 会被 fuzzTran 的 en 去重当成 undefined 折叠掉。这里补齐 en/zh，
+// 让 /dict/鳄神 这类武器名也能命中 wmr 的翻译。
+function normalizeWord(v) {
+    if (!v) return v
+    if (!v.en || !v.zh) {
+        const i18n = v.i18n || {}
+        const en = v.en || (i18n.en && i18n.en.name) || v.slug || v.key
+        const zh = v.zh || (i18n['zh-hans'] && i18n['zh-hans'].name) || v.key
+        return {...v, en, zh}
+    }
+    return v
+}
 
 function getSearchStr(original,getCache){
     const stringArray = original.split(/\\n| /);//.split(' ');   //.match(/\w+|\S/g);   //.split(/\W+/);
