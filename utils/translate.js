@@ -50,6 +50,9 @@ const translateApi = {
         let _key = utils.formatter(input)
         let libArray = Object.keys(wfaLibs.libs)
             .filter(lib => !['rw', 'rd', 'Alias'].includes(lib))
+            // BrowseDict 等词库是普通对象（没有 mcache 的 keys()），
+            // 混进来会让 getSaleWordFromLib 抛 TypeError，整个 /dict 返回 500。
+            .filter(lib => wfaLibs.libs[lib] && typeof wfaLibs.libs[lib].keys === 'function')
             .filter(lib => !libRange.length > 0 || libRange.includes(lib))
         logger.info(`translate lib range: ${libArray}`)
         return libArray
