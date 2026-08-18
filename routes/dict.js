@@ -27,7 +27,13 @@ router.all(['/:key','/:key/:libs'],function (req,res) {
     acc: 100,
     alias: true
   }] : [];
-  res.json(aliasHit.concat(tran.fuzzTran(pathKey,libs,max)));
+  let hits = aliasHit.concat(tran.fuzzTran(pathKey,libs,max));
+  // 武器名（鳄神/Sobek）只存在于 wm 的紫卡/玄骸词库里，指定词库时不额外兜底。
+  if(hits.length === 0 && libs.length === 0){
+    hits = tran.fuzzTran(pathKey,['wmRiven','auctionsWeapons'],max);
+    logger.info(`dict miss, fallback to wmr: ${pathKey} -> ${hits.length}`);
+  }
+  res.json(hits);
 });
 
 module.exports = router;
