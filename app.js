@@ -15,6 +15,7 @@ const wiki = require('./routes/huijiwiki');
 const dict = require('./routes/dict');
 const arbEssence = require('./routes/arbitrationEssence');
 const weapons = require("./routes/weapons");
+const mods = require("./routes/mods");
 const app = express();
 
 
@@ -27,6 +28,7 @@ app.use(logger('dev'));
 app.use(express.json());
 app.use( require('request-param')({ order: ["body","params","query"] } ) )
 app.use("/weapons", weapons);
+app.use("/mods", mods);
 app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(Fingerprint( {
