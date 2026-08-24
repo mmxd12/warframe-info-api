@@ -73,6 +73,18 @@ curl -X POST -H 'Content-Type:application/json' \
 
 ---
 
+### 4. 武器数据  `/weapons`
+返回 WFCD 武器数据（Primary/Secondary/Melee），自带中文名。
+```
+curl http://host:port/weapons
+```
+
+### 5. MOD 数据  `/mods`
+返回 WFCD MOD 数据（1540+ 个），自带中文名和数值化属性。
+```
+curl http://host:port/mods
+```
+
 ### 3. 仲裁表
 查询仲裁任务的精华/小时、品质、节点。
 
