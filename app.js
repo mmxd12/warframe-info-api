@@ -14,6 +14,7 @@ const wma = require('./routes/warframeMarketAuctions');
 const wiki = require('./routes/huijiwiki');
 const dict = require('./routes/dict');
 const arbEssence = require('./routes/arbitrationEssence');
+const weapons = require("./routes/weapons");
 const app = express();
 
 
@@ -25,6 +26,7 @@ app.set('view engine', 'ejs');
 app.use(logger('dev'));
 app.use(express.json());
 app.use( require('request-param')({ order: ["body","params","query"] } ) )
+app.use("/weapons", weapons);
 app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(Fingerprint( {
