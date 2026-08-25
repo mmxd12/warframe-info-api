@@ -363,6 +363,8 @@ function archimedeaFormat(body) {
             ? '时光科研' : '深层科研';
         (a.missions || []).forEach(m => {
             if (m.deviation) m.deviation.name = zh(m.deviation.name);
+            if (m.missionType) m.missionType = tran.translateByCache(m.missionType);
+            if (m.faction) m.faction = tran.translateByCache(m.faction);
             (m.riskVariables || []).forEach(r => { r.name = zh(r.name); });
         });
         (a.personalModifiers || []).forEach(pm => { pm.name = zh(pm.name); });
