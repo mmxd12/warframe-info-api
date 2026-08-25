@@ -80,6 +80,14 @@ curl http://host:port/weapons
 ```
 
 ### 5. MOD 数据  `/mods`
+
+### 6. 战甲数据  `/warframes`
+返回 WFCD 战甲数据（121 个战甲），自带中文名和黑话别名。
+```
+curl http://host:port/warframes
+```
+
+**黑话支持**（alias_local.json，可自定义）: 咖喱棒(Excalibur)、肥宅(Grendel)、奶妈(Trinity)、电男(Volt)、dj(Octavia) 等 208+ 条。
 返回 WFCD MOD 数据（1540+ 个），自带中文名和数值化属性。
 ```
 curl http://host:port/mods
