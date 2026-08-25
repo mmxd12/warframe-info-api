@@ -362,10 +362,10 @@ function archimedeaFormat(body) {
         a.typeZh = /HEX/i.test(String(a.typeKey || a.type).replace(/\s+/g, ''))
             ? '时光科研' : '深层科研';
         (a.missions || []).forEach(m => {
-            if (m.deviation) m.deviation.name = zh(m.deviation.name);
+            if (m.deviation) { m.deviation.name = zh(m.deviation.name); m.deviation.description = zh(m.deviation.description); }
             if (m.missionType) m.missionType = tran.translateByCache(m.missionType);
             if (m.faction) m.faction = tran.translateByCache(m.faction);
-            (m.riskVariables || []).forEach(r => { r.name = zh(r.name); });
+            (m.risks || []).forEach(r => { r.name = zh(r.name); });
         });
         (a.personalModifiers || []).forEach(pm => { pm.name = zh(pm.name); });
     });
